@@ -7,7 +7,8 @@ defmodule PgLargeObjects.MixProject do
       version: "0.1.0",
       elixir: "~> 1.19",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      elixirc_paths: elixirc_paths(Mix.env())
     ]
   end
 
@@ -21,8 +22,12 @@ defmodule PgLargeObjects.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-          {:ecto_sql, "~> 3.0"},
-    {:postgrex, ">= 0.0.0"}
+      {:ecto_sql, "~> 3.0"},
+      {:postgrex, ">= 0.0.0"},
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false}
     ]
   end
+
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(_env), do: ["lib"]
 end
