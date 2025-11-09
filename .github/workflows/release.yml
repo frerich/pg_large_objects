@@ -1,0 +1,36 @@
+---
+name: 'Release'
+
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+
+jobs:
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: 1.19.2
+          otp-version: 28.1
+
+      - name: Create Release Package
+        run: mix hex.build
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files:
+            pg_large_objects-${{ github.ref_name }}.tar
+
+      - name: Publish to Hex.pm
+        run: mix deps.get && mix hex.publish --yes
+        env:
+          HEX_API_KEY: ${{ secrets.HEX_API_KEY }}

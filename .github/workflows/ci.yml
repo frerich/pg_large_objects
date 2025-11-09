@@ -1,0 +1,65 @@
+---
+name: Integration Testing
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+
+    name: Build and test
+    runs-on: ubuntu-latest
+
+    env:
+      MIX_ENV: test
+
+    strategy:
+      matrix:
+        elixir: [1.19.2]
+        otp: [28.1]
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          elixir-version: ${{ matrix.elixir }}
+          otp-version: ${{ matrix.otp }}
+
+      - name: Restore cached dependencies and build artifacts
+        uses: actions/cache@v4
+        with:
+          path: |
+            deps
+            _build
+          key: mix-${{ runner.os }}-${{ matrix.elixir }}-${{ matrix.otp }}-${{ hashFiles('**/mix.lock') }}
+
+      - name: Install dependencies
+        run: mix deps.get
+
+      - name: Check formatting
+        run: mix format --check-formatted
+
+      - name: Check for unused dependencies
+        run: mix deps.unlock --check-unused
+
+      - name: Compile dependencies
+        run: mix deps.compile
+
+      - name: Compile sources
+        run: mix compile --warnings-as-errors
+
+      - name: Run Credo
+        run: mix credo --strict
+
+      - name: Launch PostgreSQL
+        run: |
+          sudo systemctl start postgresql.service
+          sudo su - postgres -c "psql -c \"ALTER USER postgres PASSWORD 'postgres'\""
+
+      - name: Run tests
+        run: mix test
