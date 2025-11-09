@@ -1,7 +1,5 @@
 defmodule PgLargeObjects.Bindings do
-  @moduledoc """
-  Low-level bindings to PostgreSQL Large Object API.
-  """
+  @moduledoc false
 
   # See https://www.postgresql.org/docs/current/largeobjects.html
 
@@ -12,8 +10,13 @@ defmodule PgLargeObjects.Bindings do
   @seek_cur 1
   @seek_end 2
 
+  @doc false
   defguard is_pos_integer(value) when is_integer(value) and value > 0
+
+  @doc false
   defguard is_non_neg_integer(value) when is_integer(value) and value >= 0
+
+  @doc false
   defguard is_repo(value) when is_atom(value) or is_pid(value)
 
   def create(repo, desired_oid)
@@ -69,7 +72,7 @@ defmodule PgLargeObjects.Bindings do
   end
 
   def lseek64(repo, fd, offset, whence)
-      when is_repo(repo) and is_non_neg_integer(fd) and is_non_neg_integer(offset) and
+      when is_repo(repo) and is_non_neg_integer(fd) and is_integer(offset) and
              whence in [@seek_set, @seek_cur, @seek_end] do
     case repo.query("SELECT lo_lseek64($1, $2, $3)", [fd, offset, whence]) do
       {:ok, %{rows: [[position]]}} ->

@@ -9,7 +9,22 @@ defmodule PgLargeObjects.MixProject do
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
-      elixirc_paths: elixirc_paths(Mix.env())
+      elixirc_paths: elixirc_paths(Mix.env()),
+
+      # For packaging
+      description: "An Elixir library for working with large objectsin PostgreSQL databases.",
+      package: [
+        licenses: ["BSD-2-Clause"],
+        links: %{"GitHub" => "https://github.com/frerich/pg_large_objects"}
+      ],
+
+      # For documentation
+      name: "PgLargeObjects",
+      source_url: "https://github.com/frerich/pg_large_objects",
+      docs: [
+        main: "readme",
+        extras: ["README.md", "LICENSE.md"]
+      ]
     ]
   end
 
@@ -25,7 +40,8 @@ defmodule PgLargeObjects.MixProject do
     [
       {:ecto_sql, "~> 3.0"},
       {:postgrex, ">= 0.0.0"},
-      {:credo, "~> 1.7", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:ex_doc, "~> 0.27", only: :dev, runtime: false}
     ]
   end
 

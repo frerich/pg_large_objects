@@ -1,6 +1,27 @@
 defmodule PgLargeObjects.EctoQuery do
   @moduledoc """
   Extensions to Ecto's query DSL.
+
+  Import this module to make various macros available wrapping the raw
+  PostgreSQL API for dealing with large objects.
+
+  This permits operating on large objects in bulk as part of SQL queries. For
+  example
+
+  ```elixir
+  import Ecto.Query
+  import PgLargeObjects.EctoQuery
+
+  # Delete all data uploaded by a given user.
+  from(upload in Upload,
+    where: upload.user_id == ^user_id,
+    select: lo_unlink(upload.object_id)
+  ) |> Repo.all()
+  ```
+
+  See the PostgreSQL documentation at
+  https://www.postgresql.org/docs/current/lo-interfaces.html for a discussion
+  of these functions.
   """
 
   defmacro lo_create(desired_oid \\ 0) do
