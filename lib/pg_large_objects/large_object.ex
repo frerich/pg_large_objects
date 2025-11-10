@@ -15,6 +15,9 @@ defmodule PgLargeObjects.LargeObject do
   > All operations on `LargeObject` values *must* take place within a database
   > transactions since the internal handle managed by the structure is only
   > valid for the duration of a transaction.
+  >
+  > Any large object value will be closed automatically at the end of the
+  > transaction.
 
   ## Streaming
 
@@ -59,6 +62,8 @@ defmodule PgLargeObjects.LargeObject do
   Creates a new large object in the database `repo` with a random object ID,
   and opens it for reading or writing.
 
+  The object will be closed automatically at the end of the transaction.
+
   ## Options
 
   * `:bufsize` - number of bytes to transfer at a time when streaming into/out
@@ -84,6 +89,8 @@ defmodule PgLargeObjects.LargeObject do
 
   Opens an existing large object identified by the object identifier `oid` in
   the database `repo`.
+
+  The object will be closed automatically at the end of the transaction.
 
   ## Options
 
@@ -151,6 +158,9 @@ defmodule PgLargeObjects.LargeObject do
   Close a large object.
 
   Frees any database resources associated with the given object `lob`.
+
+  Any large object descriptors that remain open at the end of a transaction
+  will be closed automatically.
 
   ## Return value
 
