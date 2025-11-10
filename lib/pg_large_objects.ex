@@ -70,13 +70,13 @@ defmodule PgLargeObjects do
 
   ## Return value
 
+  * `:ok` in case the `:into` option references a `Collectable`.
   * `{:ok, data}` in case the `:into` option is `nil`
-  * `{:ok, :ok}` in case the `:into` option references a `Collectable`.
   * `{:error, :invalid_oid}` in case there is no large object with the given
     `oid`.
   """
   @spec export(Ecto.Repo.t() | pid(), pos_integer(), keyword()) ::
-          {:ok, binary()} | {:ok, :ok} | {:error, :invalid_oid}
+          :ok | {:ok, binary()} | {:error, :invalid_oid}
   def export(repo, oid, opts \\ [])
       when (is_atom(repo) or is_pid(repo)) and is_integer(oid) and oid > 0 and is_list(opts) do
     opts = Keyword.validate!(opts, [:into, bufsize: 65_536])
@@ -86,7 +86,7 @@ defmodule PgLargeObjects do
         {:ok, buffer} = StringIO.open("", encoding: :latin1)
 
         result =
-          with {:ok, :ok} <- export(repo, oid, into: IO.binstream(buffer, opts[:bufsize])) do
+          with :ok <- export(repo, oid, into: IO.binstream(buffer, opts[:bufsize])) do
             {_input, output} = StringIO.contents(buffer)
             {:ok, output}
           end
@@ -101,7 +101,7 @@ defmodule PgLargeObjects do
           |> Stream.into(collectable)
           |> Stream.run()
 
-          {:ok, :ok}
+          :ok
         end
     end
   end

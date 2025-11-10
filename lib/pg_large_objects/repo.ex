@@ -61,7 +61,7 @@ defmodule PgLargeObjects.Repo do
       See `PgLargeObjects.export/3` for documentation.
       """
       @spec export_large_object(pos_integer(), keyword()) ::
-              {:ok, binary()} | {:ok, :ok} | {:error, :invalid_oid}
+              :ok | {:ok, binary()} | {:error, :invalid_oid}
       def export_large_object(oid, opts \\ []) do
         PgLargeObjects.export(__MODULE__, oid, opts)
       end
