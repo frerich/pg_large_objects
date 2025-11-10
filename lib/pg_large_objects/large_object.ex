@@ -41,7 +41,7 @@ defmodule PgLargeObjects.LargeObject do
   alias PgLargeObjects.Bindings
 
   @type t :: %__MODULE__{
-          repo: Ecto.Repo.t() | pid(),
+          repo: Ecto.Repo.t(),
           oid: pos_integer(),
           fd: non_neg_integer(),
           bufsize: non_neg_integer()
@@ -70,7 +70,7 @@ defmodule PgLargeObjects.LargeObject do
 
   * `{:ok, lob}` where `lob` is `LargeObject` structure.
   """
-  @spec create(Ecto.Repo.t() | pid(), keyword()) :: {:ok, t()}
+  @spec create(Ecto.Repo.t(), keyword()) :: {:ok, t()}
   def create(repo, opts \\ []) when is_atom(repo) and is_list(opts) do
     opts = Keyword.validate!(opts, mode: :read_write, bufsize: 1_048_576)
 
@@ -98,7 +98,7 @@ defmodule PgLargeObjects.LargeObject do
   * `{:error, :invalid_oid}` if the given `oid` does not reference a large
     object.
   """
-  @spec open(Ecto.Repo.t() | pid(), pos_integer(), keyword()) ::
+  @spec open(Ecto.Repo.t(), pos_integer(), keyword()) ::
           {:ok, t()} | {:error, :invalid_oid}
   def open(repo, oid, opts \\ []) when is_atom(repo) and is_pos_integer(oid) and is_list(opts) do
     # https://www.postgresql.org/docs/current/lo-interfaces.html#LO-READ says
@@ -142,7 +142,7 @@ defmodule PgLargeObjects.LargeObject do
   * `{:error, :invalid_oid}` if the given `oid` does not reference a large
     object.
   """
-  @spec remove(Ecto.Repo.t() | pid(), pos_integer()) :: :ok | {:error, :invalid_oid}
+  @spec remove(Ecto.Repo.t(), pos_integer()) :: :ok | {:error, :invalid_oid}
   def remove(repo, oid) when is_atom(repo) and is_pos_integer(oid) do
     Bindings.unlink(repo, oid)
   end
