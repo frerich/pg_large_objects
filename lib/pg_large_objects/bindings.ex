@@ -45,7 +45,7 @@ defmodule PgLargeObjects.Bindings do
   def close(repo, fd) when is_atom(repo) and is_non_neg_integer(fd) do
     case repo.query("SELECT lo_close($1)", [fd]) do
       {:ok, _} -> :ok
-      {:error, %{postgres: %{code: :undefined_object}}} -> {:error, :invalid_fd}
+      {:error, %{postgres: %{code: :undefined_object}}} -> {:error, :not_found}
     end
   end
 
@@ -53,7 +53,7 @@ defmodule PgLargeObjects.Bindings do
     case repo.query("SELECT lowrite($1, $2)", [fd, data]) do
       {:ok, _} -> :ok
       {:error, %{postgres: %{code: :object_not_in_prerequisite_state}}} -> {:error, :read_only}
-      {:error, %{postgres: %{code: :undefined_object}}} -> {:error, :invalid_fd}
+      {:error, %{postgres: %{code: :undefined_object}}} -> {:error, :not_found}
     end
   end
 
@@ -64,7 +64,7 @@ defmodule PgLargeObjects.Bindings do
         {:ok, data}
 
       {:error, %{postgres: %{code: :undefined_object}}} ->
-        {:error, :invalid_fd}
+        {:error, :not_found}
     end
   end
 
@@ -76,7 +76,7 @@ defmodule PgLargeObjects.Bindings do
         {:ok, position}
 
       {:error, %{postgres: %{code: :undefined_object}}} ->
-        {:error, :invalid_fd}
+        {:error, :not_found}
 
       {:error, %{postgres: %{code: :invalid_parameter_value}}} ->
         {:error, :invalid_offset}
@@ -89,7 +89,7 @@ defmodule PgLargeObjects.Bindings do
         {:ok, position}
 
       {:error, %{postgres: %{code: :undefined_object}}} ->
-        {:error, :invalid_fd}
+        {:error, :not_found}
     end
   end
 
@@ -100,7 +100,7 @@ defmodule PgLargeObjects.Bindings do
         :ok
 
       {:error, %{postgres: %{code: :undefined_object}}} ->
-        {:error, :invalid_fd}
+        {:error, :not_found}
 
       {:error, %{postgres: %{code: :object_not_in_prerequisite_state}}} ->
         {:error, :read_only}

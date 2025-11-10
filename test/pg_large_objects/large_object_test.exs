@@ -46,7 +46,7 @@ defmodule PgLargeObjects.LargeObjectTest do
     test "fails given invalid object" do
       with_object("", fn lob ->
         :ok = LargeObject.remove(TestRepo, lob.oid)
-        assert {:error, :invalid_fd} == LargeObject.close(lob)
+        assert {:error, :not_found} == LargeObject.close(lob)
       end)
     end
   end
@@ -61,7 +61,7 @@ defmodule PgLargeObjects.LargeObjectTest do
     test "fails given invalid object" do
       with_object(:crypto.strong_rand_bytes(1024), fn lob ->
         :ok = LargeObject.remove(TestRepo, lob.oid)
-        assert {:error, :invalid_fd} == LargeObject.size(lob)
+        assert {:error, :not_found} == LargeObject.size(lob)
       end)
     end
   end
@@ -101,7 +101,7 @@ defmodule PgLargeObjects.LargeObjectTest do
     test "fails given invalid object" do
       with_object("", [mode: :write], fn lob ->
         :ok = LargeObject.remove(TestRepo, lob.oid)
-        assert {:error, :invalid_fd} == LargeObject.write(lob, "Dummy")
+        assert {:error, :not_found} == LargeObject.write(lob, "Dummy")
       end)
     end
 
@@ -149,7 +149,7 @@ defmodule PgLargeObjects.LargeObjectTest do
     test "fails given invalid object" do
       with_object("ABCDEFG", fn lob ->
         :ok = LargeObject.remove(TestRepo, lob.oid)
-        assert {:error, :invalid_fd} == LargeObject.read(lob, 100)
+        assert {:error, :not_found} == LargeObject.read(lob, 100)
       end)
     end
   end
@@ -223,7 +223,7 @@ defmodule PgLargeObjects.LargeObjectTest do
     test "fails given invalid object" do
       with_object("ABCDEFG", fn lob ->
         :ok = LargeObject.remove(TestRepo, lob.oid)
-        assert {:error, :invalid_fd} = LargeObject.seek(lob, 3)
+        assert {:error, :not_found} = LargeObject.seek(lob, 3)
       end)
     end
   end
@@ -252,7 +252,7 @@ defmodule PgLargeObjects.LargeObjectTest do
     test "fails given invalid object" do
       with_object("ABCDEF", fn lob ->
         :ok = LargeObject.remove(TestRepo, lob.oid)
-        assert {:error, :invalid_fd} = LargeObject.tell(lob)
+        assert {:error, :not_found} = LargeObject.tell(lob)
       end)
     end
   end
@@ -294,7 +294,7 @@ defmodule PgLargeObjects.LargeObjectTest do
     test "fails given invalid object" do
       with_object("ABCDEF", fn lob ->
         :ok = LargeObject.remove(TestRepo, lob.oid)
-        assert {:error, :invalid_fd} = LargeObject.resize(lob, 3)
+        assert {:error, :not_found} = LargeObject.resize(lob, 3)
       end)
     end
   end

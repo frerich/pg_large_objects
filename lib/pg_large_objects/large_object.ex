@@ -165,9 +165,10 @@ defmodule PgLargeObjects.LargeObject do
   ## Return value
 
   * `:ok` on success.
-  * `{:error, :invalid_fd}` if the given large object no longer exists.
+  * `{:error, :not_found}` if the given large object is not open (e.g. because
+  it was already closed, or deleted).
   """
-  @spec close(t()) :: :ok | {:error, :invalid_fd}
+  @spec close(t()) :: :ok | {:error, :not_found}
   def close(%__MODULE__{} = lob) do
     Bindings.close(lob.repo, lob.fd)
   end
@@ -181,9 +182,10 @@ defmodule PgLargeObjects.LargeObject do
 
   * `{:ok, size}` on success, with `size` being the size of the object in
     bytes.
-  * `{:error, :invalid_fd}` if the given large object no longer exists.
+  * `{:error, :not_found}` if the given large object is not open (e.g. because
+  it was already closed, or deleted).
   """
-  @spec size(t()) :: {:ok, non_neg_integer()} | {:error, :invalid_fd}
+  @spec size(t()) :: {:ok, non_neg_integer()} | {:error, :not_found}
   def size(%__MODULE__{} = lob) do
     with {:ok, pos} <- tell(lob),
          {:ok, size} <- seek(lob, 0, :end),
@@ -218,10 +220,11 @@ defmodule PgLargeObjects.LargeObject do
   ## Return value
 
   * `:ok` on success
-  * `{:error, :invalid_fd}` if the given large object no longer exists.
+  * `{:error, :not_found}` if the given large object is not open (e.g. because
+  it was already closed, or deleted).
   * `{:error, :read_only}` if the given large object was not opened for writing.
   """
-  @spec write(t(), binary()) :: :ok | {:error, :invalid_fd} | {:error, :read_only}
+  @spec write(t(), binary()) :: :ok | {:error, :not_found} | {:error, :read_only}
   def write(%__MODULE__{} = lob, data) when is_binary(data) do
     Bindings.write(lob.repo, lob.fd, data)
   end
@@ -254,9 +257,10 @@ defmodule PgLargeObjects.LargeObject do
   ## Return value
 
   * `{:ok, data}` on success
-  * `{:error, :invalid_fd}` if the given large object no longer exists.
+  * `{:error, :not_found}` if the given large object is not open (e.g. because
+  it was already closed, or deleted).
   """
-  @spec read(t(), non_neg_integer()) :: {:ok, binary()} | {:error, :invalid_fd}
+  @spec read(t(), non_neg_integer()) :: {:ok, binary()} | {:error, :not_found}
   def read(%__MODULE__{} = lob, length) when is_non_neg_integer(length) do
     Bindings.read(lob.repo, lob.fd, length)
   end
@@ -288,10 +292,11 @@ defmodule PgLargeObjects.LargeObject do
   ## Return value
 
   * `{:ok, new_position}` on success
-  * `{:error, :invalid_fd}` if the given large object no longer exists.
+  * `{:error, :not_found}` if the given large object is not open (e.g. because
+  it was already closed, or deleted).
   """
   @spec seek(t(), integer(), :start | :current | :end) ::
-          {:ok, non_neg_integer()} | {:error, :invalid_fd}
+          {:ok, non_neg_integer()} | {:error, :not_found}
   def seek(%__MODULE__{} = lob, offset, start \\ :start)
       when is_integer(offset) and
              ((start == :start and offset >= 0) or start == :current or
@@ -315,9 +320,10 @@ defmodule PgLargeObjects.LargeObject do
   ## Return value
 
   * `{:ok, position}` on success
-  * `{:error, :invalid_fd}` if the given large object no longer exists.
+  * `{:error, :not_found}` if the given large object is not open (e.g. because
+  it was already closed, or deleted).
   """
-  @spec tell(t()) :: {:ok, non_neg_integer()} | {:error, :invalid_fd}
+  @spec tell(t()) :: {:ok, non_neg_integer()} | {:error, :not_found}
   def tell(%__MODULE__{} = lob) do
     Bindings.tell64(lob.repo, lob.fd)
   end
@@ -334,10 +340,11 @@ defmodule PgLargeObjects.LargeObject do
   ## Return value
 
   * `:ok` on success
-  * `{:error, :invalid_fd}` if the given large object no longer exists.
+  * `{:error, :not_found}` if the given large object is not open (e.g. because
+  it was already closed, or deleted).
   * `{:error, :read_only}` if the given large object was not opened for writing.
   """
-  @spec resize(t(), non_neg_integer()) :: :ok | {:error, :invalid_fd}
+  @spec resize(t(), non_neg_integer()) :: :ok | {:error, :not_found}
   def resize(%__MODULE__{} = lob, size) when is_non_neg_integer(size) do
     Bindings.truncate64(lob.repo, lob.fd, size)
   end
