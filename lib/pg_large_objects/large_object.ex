@@ -221,7 +221,8 @@ defmodule PgLargeObjects.LargeObject do
 
   Reads a `length` bytes of data from the given large object `lob`, starting at
   the current iosition in the object. Advanced the position by the number of
-  bytes read, or until the end of file.
+  bytes read, or until the end of file. The read position will not be advanced
+  when the current position is beyond the end of the file.
 
   The data is not chunked but transferred in one go. For large amounts of data,
   do not pass a large `length` but instead consider streaming data by
@@ -259,24 +260,32 @@ defmodule PgLargeObjects.LargeObject do
   The `offset` value is interpreted depending on the `start` value, which can
   be one of three atoms:
 
-  * `:start` - interpret `offset` as the number of bytes from the start of the object.
-  * `:current` - interpret `offset` as a value relative to the current position.
-  * `:end` - interpret `offset` as the number of bytes from the end of the object.
+  * `:start` - interpret `offset` as the number of bytes from the start of the
+    object. The offset should be a non-negative value. Using the offset 0 moves
+    the position to the first byte in the object.
+  * `:current` - interpret `offset` as a value relative to the current
+    position. The offset can be any integer. Using the offset 0 leaves the
+    position unchanged.
+  * `:end` - interpret `offset` as the number of bytes from the end of the
+    object. The offset should be a non-positive value. Using the offset 0 moves
+    the position to one byte *after* the object.
 
   The default `start` value is `:start`.
 
-  Invalid `offset` values (i.e. before the beginning or beyond the end of the
-  object) are silently ignored.
+  It is possible to seek past the end of the object, but it is not permitted to
+  seek before the beginning of the object.
 
   ## Return value
 
-  * `{:ok, position}` on success
+  * `{:ok, new_position}` on success
   * `{:error, :invalid_fd}` if the given large object no longer exists.
   """
   @spec seek(t(), integer(), :start | :current | :end) ::
           {:ok, non_neg_integer()} | {:error, :invalid_fd}
   def seek(%__MODULE__{} = lob, offset, start \\ :start)
-      when is_integer(offset) and start in [:start, :current, :end] do
+      when is_integer(offset) and start in [:start, :current, :end] and
+             ((start == :start and offset >= 0) or start == :current or
+                (start == :end and offset <= 0)) do
     whence =
       case start do
         :start -> Bindings.constant(:seek_set)
@@ -309,14 +318,18 @@ defmodule PgLargeObjects.LargeObject do
   Truncates (or extends) the given large object `lob` such that it is `size`
   bytes in size.
 
+  If `size` is larger than the current size of the object, the object will be
+  extended with null bytes (<<0>>).
+
   ## Return value
 
-  * `{:ok, size}` on success
+  * `:ok` on success
   * `{:error, :invalid_fd}` if the given large object no longer exists.
+  * `{:error, :read_only}` if the given large object was not opened for writing.
   """
-  @spec resize(t(), non_neg_integer()) :: {:ok, non_neg_integer()} | {:error, :invalid_fd}
+  @spec resize(t(), non_neg_integer()) :: :ok | {:error, :invalid_fd}
   def resize(%__MODULE__{} = lob, size) when is_non_neg_integer(size) do
-    Bindings.truncate64(lob.repo, lob.fd, lob.bufsize)
+    Bindings.truncate64(lob.repo, lob.fd, size)
   end
 end
 

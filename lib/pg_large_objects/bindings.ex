@@ -77,6 +77,9 @@ defmodule PgLargeObjects.Bindings do
 
       {:error, %{postgres: %{code: :undefined_object}}} ->
         {:error, :invalid_fd}
+
+      {:error, %{postgres: %{code: :invalid_parameter_value}}} ->
+        {:error, :invalid_offset}
     end
   end
 
@@ -92,12 +95,15 @@ defmodule PgLargeObjects.Bindings do
 
   def truncate64(repo, fd, size)
       when is_atom(repo) and is_non_neg_integer(fd) and is_non_neg_integer(size) do
-    case repo.query(repo, "SELECT lo_truncate64($1, $2)", [fd, size]) do
-      {:ok, %{rows: [[size]]}} ->
-        {:ok, size}
+    case repo.query("SELECT lo_truncate64($1, $2)", [fd, size]) do
+      {:ok, %{rows: [[0]]}} ->
+        :ok
 
       {:error, %{postgres: %{code: :undefined_object}}} ->
         {:error, :invalid_fd}
+
+      {:error, %{postgres: %{code: :object_not_in_prerequisite_state}}} ->
+        {:error, :read_only}
     end
   end
 
