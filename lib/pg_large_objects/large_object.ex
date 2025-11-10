@@ -43,7 +43,7 @@ defmodule PgLargeObjects.LargeObject do
   @type t :: %__MODULE__{
           repo: Ecto.Repo.t() | pid(),
           oid: pos_integer(),
-          fd: nil | non_neg_integer(),
+          fd: non_neg_integer(),
           bufsize: non_neg_integer()
         }
 
