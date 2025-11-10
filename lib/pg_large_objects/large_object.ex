@@ -53,9 +53,6 @@ defmodule PgLargeObjects.LargeObject do
   @doc false
   defguard is_non_neg_integer(value) when is_integer(value) and value >= 0
 
-  @doc false
-  defguardp is_repo(value) when is_atom(value) or is_pid(value)
-
   @doc """
   Create (and open) a large object.
 
@@ -74,7 +71,7 @@ defmodule PgLargeObjects.LargeObject do
   * `{:ok, lob}` where `lob` is `LargeObject` structure.
   """
   @spec create(Ecto.Repo.t() | pid(), keyword()) :: {:ok, t()}
-  def create(repo, opts \\ []) when is_repo(repo) and is_list(opts) do
+  def create(repo, opts \\ []) when is_atom(repo) and is_list(opts) do
     opts = Keyword.validate!(opts, mode: :read_write, bufsize: 1_048_576)
 
     with {:ok, oid} <- Bindings.create(repo, 0) do
@@ -103,7 +100,7 @@ defmodule PgLargeObjects.LargeObject do
   """
   @spec open(Ecto.Repo.t() | pid(), pos_integer(), keyword()) ::
           {:ok, t()} | {:error, :invalid_oid}
-  def open(repo, oid, opts \\ []) when is_repo(repo) and is_pos_integer(oid) and is_list(opts) do
+  def open(repo, oid, opts \\ []) when is_atom(repo) and is_pos_integer(oid) and is_list(opts) do
     # https://www.postgresql.org/docs/current/lo-interfaces.html#LO-READ says
     #
     #   In practice, it's best to transfer data in chunks of at most a few
@@ -146,7 +143,7 @@ defmodule PgLargeObjects.LargeObject do
     object.
   """
   @spec remove(Ecto.Repo.t() | pid(), pos_integer()) :: :ok | {:error, :invalid_oid}
-  def remove(repo, oid) when is_repo(repo) and is_pos_integer(oid) do
+  def remove(repo, oid) when is_atom(repo) and is_pos_integer(oid) do
     Bindings.unlink(repo, oid)
   end
 
