@@ -40,6 +40,13 @@ defmodule PgLargeObjects.LargeObject do
 
   alias PgLargeObjects.Bindings
 
+  @type t :: %__MODULE__{
+          repo: Ecto.Repo.t() | pid(),
+          oid: pos_integer(),
+          fd: nil | non_neg_integer(),
+          bufsize: non_neg_integer()
+        }
+
   @doc false
   defguard is_pos_integer(value) when is_integer(value) and value > 0
 
@@ -66,6 +73,7 @@ defmodule PgLargeObjects.LargeObject do
 
   * `{:ok, lob}` where `lob` is `LargeObject` structure.
   """
+  @spec create(Ecto.Repo.t() | pid(), keyword()) :: {:ok, t()}
   def create(repo, opts \\ []) when is_repo(repo) and is_list(opts) do
     opts = Keyword.validate!(opts, mode: :read_write, bufsize: 1_048_576)
 
@@ -93,6 +101,8 @@ defmodule PgLargeObjects.LargeObject do
   * `{:error, :invalid_oid}` if the given `oid` does not reference a large
     object.
   """
+  @spec open(Ecto.Repo.t() | pid(), pos_integer(), keyword()) ::
+          {:ok, t()} | {:error, :invalid_oid}
   def open(repo, oid, opts \\ []) when is_repo(repo) and is_pos_integer(oid) and is_list(opts) do
     # https://www.postgresql.org/docs/current/lo-interfaces.html#LO-READ says
     #
@@ -135,6 +145,7 @@ defmodule PgLargeObjects.LargeObject do
   * `{:error, :invalid_oid}` if the given `oid` does not reference a large
     object.
   """
+  @spec remove(Ecto.Repo.t() | pid(), pos_integer()) :: :ok | {:error, :invalid_oid}
   def remove(repo, oid) when is_repo(repo) and is_pos_integer(oid) do
     Bindings.unlink(repo, oid)
   end
@@ -149,6 +160,7 @@ defmodule PgLargeObjects.LargeObject do
   * `:ok` on success.
   * `{:error, :invalid_fd}` if the given large object no longer exists.
   """
+  @spec close(t()) :: :ok | {:error, :invalid_oid}
   def close(%__MODULE__{} = lob) do
     Bindings.close(lob.repo, lob.fd)
   end
@@ -164,6 +176,7 @@ defmodule PgLargeObjects.LargeObject do
     bytes.
   * `{:error, :invalid_fd}` if the given large object no longer exists.
   """
+  @spec size(t()) :: {:ok, non_neg_integer()} | {:error, :invalid_oid}
   def size(%__MODULE__{} = lob) do
     with {:ok, pos} <- tell(lob),
          {:ok, size} <- seek(lob, 0, :end),
@@ -201,6 +214,7 @@ defmodule PgLargeObjects.LargeObject do
   * `{:error, :invalid_fd}` if the given large object no longer exists.
   * `{:error, :read_only}` if the given large object was not opened for writing.
   """
+  @spec write(t(), binary()) :: :ok | {:error, :invalid_fd} | {:error, :read_only}
   def write(%__MODULE__{} = lob, data) when is_binary(data) do
     Bindings.write(lob.repo, lob.fd, data)
   end
@@ -234,6 +248,7 @@ defmodule PgLargeObjects.LargeObject do
   * `{:ok, data}` on success
   * `{:error, :invalid_fd}` if the given large object no longer exists.
   """
+  @spec read(t(), non_neg_integer()) :: {:ok, binary()} | {:error, :invalid_fd}
   def read(%__MODULE__{} = lob, length) when is_non_neg_integer(length) do
     Bindings.read(lob.repo, lob.fd, length)
   end
@@ -261,6 +276,8 @@ defmodule PgLargeObjects.LargeObject do
   * `{:ok, position}` on success
   * `{:error, :invalid_fd}` if the given large object no longer exists.
   """
+  @spec seek(t(), integer(), :start | :current | :end) ::
+          {:ok, non_neg_integer()} | {:error, :invalid_fd}
   def seek(%__MODULE__{} = lob, offset, start \\ :start)
       when is_integer(offset) and start in [:start, :current, :end] do
     whence =
@@ -284,6 +301,7 @@ defmodule PgLargeObjects.LargeObject do
   * `{:ok, position}` on success
   * `{:error, :invalid_fd}` if the given large object no longer exists.
   """
+  @spec tell(t()) :: {:ok, non_neg_integer()} | {:error, :invalid_fd}
   def tell(%__MODULE__{} = lob) do
     Bindings.tell64(lob.repo, lob.fd)
   end
@@ -299,6 +317,7 @@ defmodule PgLargeObjects.LargeObject do
   * `{:ok, size}` on success
   * `{:error, :invalid_fd}` if the given large object no longer exists.
   """
+  @spec resize(t(), non_neg_integer()) :: {:ok, non_neg_integer()} | {:error, :invalid_fd}
   def resize(%__MODULE__{} = lob, size) when is_non_neg_integer(size) do
     Bindings.truncate64(lob.repo, lob.fd, lob.bufsize)
   end

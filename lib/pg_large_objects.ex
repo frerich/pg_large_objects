@@ -30,6 +30,8 @@ defmodule PgLargeObjects do
 
   * `{:ok, object_id}` in case of success.
   """
+  @spec import(Ecto.Repo.t() | pid(), binary() | Enumerable.t(), keyword()) ::
+          {:ok, pos_integer()}
   def import(repo, data, opts \\ []) when (is_atom(repo) or is_pid(repo)) and is_list(opts) do
     opts = Keyword.validate!(opts, bufsize: 65_536)
 
@@ -73,6 +75,8 @@ defmodule PgLargeObjects do
   * `{:error, :invalid_oid}` in case there is no large object with the given
     `oid`.
   """
+  @spec export(Ecto.Repo.t() | pid(), pos_integer(), keyword()) ::
+          {:ok, binary()} | {:ok, :ok} | {:error, :invalid_oid}
   def export(repo, oid, opts \\ [])
       when (is_atom(repo) or is_pid(repo)) and is_integer(oid) and oid > 0 and is_list(opts) do
     opts = Keyword.validate!(opts, [:into, bufsize: 65_536])
