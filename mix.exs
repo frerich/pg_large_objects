@@ -10,6 +10,7 @@ defmodule PgLargeObjects.MixProject do
       aliases: aliases(),
       deps: deps(),
       elixirc_paths: elixirc_paths(Mix.env()),
+      dialyzer: dialyzer(Mix.env()),
 
       # For packaging
       description: "An Elixir library for working with large objectsin PostgreSQL databases.",
@@ -41,7 +42,8 @@ defmodule PgLargeObjects.MixProject do
       {:ecto_sql, "~> 3.0"},
       {:postgrex, ">= 0.0.0"},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
-      {:ex_doc, "~> 0.27", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.27", only: :dev, runtime: false},
+      {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false}
     ]
   end
 
@@ -53,4 +55,12 @@ defmodule PgLargeObjects.MixProject do
       test: ["ecto.create --quiet", "test"]
     ]
   end
+
+  defp dialyzer(:test) do
+    [
+      plt_add_apps: [:ex_unit]
+    ]
+  end
+
+  defp dialyzer(_env), do: []
 end
