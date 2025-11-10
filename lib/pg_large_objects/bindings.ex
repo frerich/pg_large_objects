@@ -27,7 +27,7 @@ defmodule PgLargeObjects.Bindings do
   def unlink(repo, oid) when is_atom(repo) and is_pos_integer(oid) do
     case repo.query("SELECT lo_unlink($1)", [oid]) do
       {:ok, _} -> :ok
-      {:error, %{postgres: %{code: :undefined_object}}} -> {:error, :invalid_oid}
+      {:error, %{postgres: %{code: :undefined_object}}} -> {:error, :not_found}
     end
   end
 
@@ -38,7 +38,7 @@ defmodule PgLargeObjects.Bindings do
         {:ok, fd}
 
       {:error, %{postgres: %{code: :undefined_object}}} ->
-        {:error, :invalid_oid}
+        {:error, :not_found}
     end
   end
 

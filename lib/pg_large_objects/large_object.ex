@@ -102,11 +102,11 @@ defmodule PgLargeObjects.LargeObject do
   ## Return value
 
   * `{:ok, lob}` on success, where `lob` is `LargeObject` structure.
-  * `{:error, :invalid_oid}` if the given `oid` does not reference a large
+  * `{:error, :not_found}` if the given `oid` does not reference a large
     object.
   """
   @spec open(Ecto.Repo.t(), pos_integer(), keyword()) ::
-          {:ok, t()} | {:error, :invalid_oid}
+          {:ok, t()} | {:error, :not_found}
   def open(repo, oid, opts \\ []) when is_atom(repo) and is_pos_integer(oid) and is_list(opts) do
     # https://www.postgresql.org/docs/current/lo-interfaces.html#LO-READ says
     #
@@ -146,10 +146,10 @@ defmodule PgLargeObjects.LargeObject do
   ## Return value
 
   * `:ok` on success.
-  * `{:error, :invalid_oid}` if the given `oid` does not reference a large
+  * `{:error, :not_found}` if the given `oid` does not reference a large
     object.
   """
-  @spec remove(Ecto.Repo.t(), pos_integer()) :: :ok | {:error, :invalid_oid}
+  @spec remove(Ecto.Repo.t(), pos_integer()) :: :ok | {:error, :not_found}
   def remove(repo, oid) when is_atom(repo) and is_pos_integer(oid) do
     Bindings.unlink(repo, oid)
   end

@@ -61,7 +61,7 @@ defmodule PgLargeObjects.Repo do
       See `PgLargeObjects.export/3` for documentation.
       """
       @spec export_large_object(pos_integer(), keyword()) ::
-              :ok | {:ok, binary()} | {:error, :invalid_oid}
+              :ok | {:ok, binary()} | {:error, :not_found}
       def export_large_object(oid, opts \\ []) do
         PgLargeObjects.export(__MODULE__, oid, opts)
       end
@@ -82,7 +82,7 @@ defmodule PgLargeObjects.Repo do
       See `PgLargeObjects.LargeObject.open/3` for documentation.
       """
       @spec open_large_object(pos_integer(), keyword()) ::
-              {:ok, PgLargeObjects.LargeObject.t()} | {:error, :invalid_oid}
+              {:ok, PgLargeObjects.LargeObject.t()} | {:error, :not_found}
       def open_large_object(oid, opts \\ []) do
         PgLargeObjects.LargeObject.open(__MODULE__, oid, opts)
       end
@@ -92,7 +92,7 @@ defmodule PgLargeObjects.Repo do
 
       See `PgLargeObjects.LargeObject.remove/2` for documentation.
       """
-      @spec remove_large_object(pos_integer()) :: :ok | {:error, :invalid_oid}
+      @spec remove_large_object(pos_integer()) :: :ok | {:error, :not_found}
       def remove_large_object(oid) do
         PgLargeObjects.LargeObject.remove(__MODULE__, oid)
       end

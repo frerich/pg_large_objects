@@ -72,11 +72,11 @@ defmodule PgLargeObjects do
 
   * `:ok` in case the `:into` option references a `Collectable`.
   * `{:ok, data}` in case the `:into` option is `nil`
-  * `{:error, :invalid_oid}` in case there is no large object with the given
+  * `{:error, :not_found}` in case there is no large object with the given
     `oid`.
   """
   @spec export(Ecto.Repo.t(), pos_integer(), keyword()) ::
-          :ok | {:ok, binary()} | {:error, :invalid_oid}
+          :ok | {:ok, binary()} | {:error, :not_found}
   def export(repo, oid, opts \\ [])
       when (is_atom(repo) or is_pid(repo)) and is_integer(oid) and oid > 0 and is_list(opts) do
     opts = Keyword.validate!(opts, [:into, bufsize: 65_536])

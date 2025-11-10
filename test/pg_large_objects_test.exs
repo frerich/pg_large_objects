@@ -63,7 +63,7 @@ defmodule PgLargeObjectsTest do
 
     test "handles invalid object IDs" do
       TestRepo.transact(fn ->
-        assert {:error, :invalid_oid} = PgLargeObjects.export(TestRepo, 12_345)
+        assert {:error, :not_found} = PgLargeObjects.export(TestRepo, 12_345)
       end)
     end
   end
