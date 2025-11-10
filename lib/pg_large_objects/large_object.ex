@@ -283,7 +283,7 @@ defmodule PgLargeObjects.LargeObject do
   @spec seek(t(), integer(), :start | :current | :end) ::
           {:ok, non_neg_integer()} | {:error, :invalid_fd}
   def seek(%__MODULE__{} = lob, offset, start \\ :start)
-      when is_integer(offset) and start in [:start, :current, :end] and
+      when is_integer(offset) and
              ((start == :start and offset >= 0) or start == :current or
                 (start == :end and offset <= 0)) do
     whence =
