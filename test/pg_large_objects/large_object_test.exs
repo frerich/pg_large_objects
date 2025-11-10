@@ -18,7 +18,7 @@ defmodule PgLargeObjects.LargeObjectTest do
     end
 
     test "fails given invalid object ID" do
-      assert {:error, :invalid_oid} == LargeObject.open(TestRepo, 12345)
+      assert {:error, :invalid_oid} == LargeObject.open(TestRepo, 12_345)
     end
   end
 
@@ -32,7 +32,7 @@ defmodule PgLargeObjects.LargeObjectTest do
     end
 
     test "fails given invalid object ID" do
-      assert {:error, :invalid_oid} == LargeObject.open(TestRepo, 12345)
+      assert {:error, :invalid_oid} == LargeObject.open(TestRepo, 12_345)
     end
   end
 
