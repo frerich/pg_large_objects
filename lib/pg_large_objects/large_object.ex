@@ -167,7 +167,7 @@ defmodule PgLargeObjects.LargeObject do
   * `:ok` on success.
   * `{:error, :invalid_fd}` if the given large object no longer exists.
   """
-  @spec close(t()) :: :ok | {:error, :invalid_oid}
+  @spec close(t()) :: :ok | {:error, :invalid_fd}
   def close(%__MODULE__{} = lob) do
     Bindings.close(lob.repo, lob.fd)
   end
@@ -183,7 +183,7 @@ defmodule PgLargeObjects.LargeObject do
     bytes.
   * `{:error, :invalid_fd}` if the given large object no longer exists.
   """
-  @spec size(t()) :: {:ok, non_neg_integer()} | {:error, :invalid_oid}
+  @spec size(t()) :: {:ok, non_neg_integer()} | {:error, :invalid_fd}
   def size(%__MODULE__{} = lob) do
     with {:ok, pos} <- tell(lob),
          {:ok, size} <- seek(lob, 0, :end),
