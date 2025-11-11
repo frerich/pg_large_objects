@@ -5,7 +5,7 @@ defmodule PgLargeObjects.MixProject do
     [
       app: :pg_large_objects,
       version: version(),
-      elixir: "~> 1.19",
+      elixir: "~> 1.18",
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
