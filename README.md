@@ -97,10 +97,8 @@ of the database:
 {:ok, data} = Repo.export_large_object(object_id)
 
 # Stream data of large object into Collectable
-:ok =
-  "/tmp/recording.mov"
-  |> File.stream!()
-  |> Repo.export_large_object(object_id)
+stream = File.stream!("/tmp/recording.mov")
+:ok = Repo.export_large_object(object_id, into: stream)
 ```
 
 Use the lower-level API in `PgLargeObjects.LargeObject` to interact with
