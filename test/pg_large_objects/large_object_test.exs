@@ -302,10 +302,10 @@ defmodule PgLargeObjects.LargeObjectTest do
   defp with_object(data, opts \\ [], fun) do
     oid = put_large_object!(data)
 
-    TestRepo.transact(fn ->
+    TestRepo.transaction(fn ->
       {:ok, lob} = LargeObject.open(TestRepo, oid, opts)
       fun.(lob)
-      {:ok, lob.oid}
+      lob.oid
     end)
   end
 end

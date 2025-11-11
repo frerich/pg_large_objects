@@ -6,8 +6,9 @@ defmodule PgLargeObjects.RepoTest do
       data = :crypto.strong_rand_bytes(Enum.random(0..1024))
 
       {:ok, oid} =
-        TestRepo.transact(fn ->
-          TestRepo.import_large_object(data)
+        TestRepo.transaction(fn ->
+          {:ok, oid} = TestRepo.import_large_object(data)
+          oid
         end)
 
       assert data == get_large_object!(oid)
@@ -21,8 +22,9 @@ defmodule PgLargeObjects.RepoTest do
       oid = put_large_object!(data)
 
       assert {:ok, ^data} =
-               TestRepo.transact(fn ->
-                 TestRepo.export_large_object(oid)
+               TestRepo.transaction(fn ->
+                 {:ok, data} = TestRepo.export_large_object(oid)
+                 data
                end)
     end
   end

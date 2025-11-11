@@ -9,8 +9,9 @@ defmodule PgLargeObjectsTest do
       data = :crypto.strong_rand_bytes(Enum.random(0..1024))
 
       {:ok, oid} =
-        TestRepo.transact(fn ->
-          PgLargeObjects.import(TestRepo, data)
+        TestRepo.transaction(fn ->
+          {:ok, oid} = PgLargeObjects.import(TestRepo, data)
+          oid
         end)
 
       assert data == get_large_object!(oid)
@@ -24,8 +25,9 @@ defmodule PgLargeObjectsTest do
       stream = IO.binstream(pid, 3)
 
       {:ok, oid} =
-        TestRepo.transact(fn ->
-          PgLargeObjects.import(TestRepo, stream)
+        TestRepo.transaction(fn ->
+          {:ok, oid} = PgLargeObjects.import(TestRepo, stream)
+          oid
         end)
 
       assert data == get_large_object!(oid)
@@ -40,7 +42,7 @@ defmodule PgLargeObjectsTest do
 
       oid = put_large_object!(data)
 
-      TestRepo.transact(fn ->
+      TestRepo.transaction(fn ->
         assert {:ok, ^data} = PgLargeObjects.export(TestRepo, oid)
       end)
     end
@@ -53,16 +55,15 @@ defmodule PgLargeObjectsTest do
       {:ok, pid} = StringIO.open("", encoding: :latin1)
       stream = IO.binstream(pid, 3)
 
-      TestRepo.transact(fn ->
+      TestRepo.transaction(fn ->
         assert :ok == PgLargeObjects.export(TestRepo, oid, into: stream)
-        {:ok, nil}
       end)
 
       assert {"", ^data} = StringIO.contents(pid)
     end
 
     test "handles invalid object IDs" do
-      TestRepo.transact(fn ->
+      TestRepo.transaction(fn ->
         assert {:error, :not_found} = PgLargeObjects.export(TestRepo, 12_345)
       end)
     end

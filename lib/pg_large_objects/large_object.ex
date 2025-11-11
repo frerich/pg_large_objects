@@ -27,15 +27,15 @@ defmodule PgLargeObjects.LargeObject do
 
   ```elixir
   # Get 189th byte of object:
-  Repo.transact(fn ->
+  Repo.transaction(fn ->
     {:ok, lob} = LargeObject.open(Repo, object_id)
-    {:ok, Enum.at(lob, 188)}
+    Enum.at(lob, 188)
   end)
 
   # Stream object into a list of chunks:
-  Repo.transact(fn ->
+  Repo.transaction(fn ->
     {:ok, lob} = LargeObject.open(Repo, object_id)
-    {:ok, Enum.to_list(lob)}
+    Enum.to_list(lob)
   end)
   ```
   """
@@ -206,15 +206,13 @@ defmodule PgLargeObjects.LargeObject do
   consider streaming data by leveraging the `Collectable` implementation, e.g.
 
   ```elixir
-  Repo.transact(fn ->
+  Repo.transaction(fn ->
       {:ok, lob} = LargeObject.open(Repo, object_id, [mode: :write])
 
       # Stream large file into the large object.
       File.stream!("/tmp/recording.ogg")
       |> Stream.into(lob)
       |> Stream.run()
-
-      {:ok, nil}
   end)
   ```
   ## Return value
@@ -242,15 +240,13 @@ defmodule PgLargeObjects.LargeObject do
   leveraging the `Enumerable` implementation, e.g.
 
   ```elixir
-  Repo.transact(fn ->
+  Repo.transaction(fn ->
       {:ok, lob} = LargeObject.open(Repo, object_id, [mode: :read])
 
       # Stream large object to local file.
       lob
       |> Stream.into(File.stream!("/tmp/recording.ogg"))
       |> Stream.run()
-
-      {:ok, nil}
   end)
   ```
 
