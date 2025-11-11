@@ -66,9 +66,9 @@ defmodule PgLargeObjects.MixProject do
   defp dialyzer(_env), do: []
 
   defp version do
-    case System.cmd("git", ["describe", "--tags"]) do
-      {output, 0} -> String.trim(output)
-      _ -> nil
+    case File.read("VERSION") do
+      {:ok, output} -> String.trim(output)
+      _ -> "0.1.0-dev"
     end
   end
 end
