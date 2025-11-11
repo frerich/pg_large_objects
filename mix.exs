@@ -43,7 +43,8 @@ defmodule PgLargeObjects.MixProject do
       {:postgrex, ">= 0.0.0"},
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:ex_doc, "~> 0.27", only: :dev, runtime: false},
-      {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false}
+      {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
+      {:benchee, "~> 1.0", only: [:dev, :test]}
     ]
   end
 
