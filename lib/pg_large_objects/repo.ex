@@ -20,16 +20,11 @@ defmodule PgLargeObjects.Repo do
 
   Doing so causes the following convenience functions to be defined on the repository module:
 
-  * `import_large_object(data, opts)` for importing data into a large object
-    using `PgLargeObjects.import/3`.
-  * `export_large_object(oid, opts)` for exporting data from a large object
-    using `PgLargeObjects.export/3`.
-  * `create_large_object/1` for creating a new large object using
-    `PgLargeObjects.LargeObject.create/2`.
-  * `open_large_object/1` for opening an existing large object using
-    `PgLargeObjects.LargeObject.open/3`.
-  * `remove_large_object/1` for removing a large object using
-    `PgLargeObjects.LargeObject.remove/2`.
+  * `import_large_object(data, opts)` - shortcut for `PgLargeObjects.import/3`.
+  * `export_large_object(oid, opts)` - shortcut for `PgLargeObjects.export/3`.
+  * `create_large_object/1` - shortcut for `PgLargeObjects.LargeObject.create/2`.
+  * `open_large_object/1` - shortcut for `PgLargeObjects.LargeObject.open/3`.
+  * `remove_large_object/1` - shortcut for `PgLargeObjects.LargeObject.remove/2`.
 
   Furthermore, a type `t` is defined in the current module. In case this is not
   desirable, e.g. because a type is already defined, pass the option
