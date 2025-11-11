@@ -13,7 +13,7 @@ defmodule PgLargeObjects.MixProject do
       dialyzer: dialyzer(Mix.env()),
 
       # For packaging
-      description: "An Elixir library for working with large objectsin PostgreSQL databases.",
+      description: "An Elixir library for working with large objects in PostgreSQL databases.",
       package: [
         licenses: ["BSD-2-Clause"],
         links: %{"GitHub" => "https://github.com/frerich/pg_large_objects"}
