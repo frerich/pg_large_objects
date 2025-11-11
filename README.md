@@ -6,8 +6,8 @@ PostgreSQL databases.
 
 ## Features
 
-* Easy and efficient streaming of data to/from large objects.
-* Lower-level API for full control over large objects.
+* Easy and memory-efficient streaming of large amounts of data (up to 4TB) using `PgLargeObjects` high-level API.
+* Random-access reads and writes to data objects via low-level `PgLargeObjects.LargeObject` API.
 * Extensions to Ecto query DSL for interacting with large objects as part of
   Ecto queries.
 
@@ -24,8 +24,8 @@ def deps do
 end
 ```
 
-Next, include `PgLargeObjects.Repo` in your `Ecto.Repo` module to define
-convenience API:
+Optional, but recommended: include `PgLargeObjects.Repo` in your `Ecto.Repo`
+module to define convenience API:
 
 ```elixir
 defmodule MyApp.Repo do
@@ -75,36 +75,32 @@ end
 ## Usage
 
 Use the high-level APIs `PgLargeObjects.import/3` and `PgLargeObjects.export/3`
-(exposed as `import_large_object/1` and `export_large_object/1` on the
+(exposed as `import_large_object/2` and `export_large_object/2` on the
  applications' repository module) for importing data into or exporting data out
 of the database:
 
 ```elixir
-# Importing data into the database
-Repo.transact(fn ->
-    # Import binary into large object
-    {:ok, object_id} = Repo.import_large_object("My payload.")
+# Import binary into large object
+{:ok, object_id} = Repo.import_large_object("My payload.")
 
-    # Stream data into large object
-    {:ok, object_id} =
-      "/tmp/recording.ogg"
-      |> File.stream!()
-      |> Repo.import_large_object()
+# Stream data into large object
+{:ok, object_id} =
+  "/tmp/recording.mov"
+  |> File.stream!()
+  |> Repo.import_large_object()
 
-    # ...store object_id somewhere to maintain reference to data.
-end)
+# ...store object_id somewhere to maintain reference to data.
+```
 
-# Exporting data from the database
-Repo.transact(fn ->
-    # Export binary from large object
-    {:ok, data} = Repo.export_large_object(object_id)
+```elixir
+# Export binary from large object
+{:ok, data} = Repo.export_large_object(object_id)
 
-    # Stream data of large object into Collectable
-    {:ok, :ok}
-        "/tmp/recording.ogg"
-        |> File.stream!()
-        |> Repo.export_large_object(object_id)
-end)
+# Stream data of large object into Collectable
+:ok =
+  "/tmp/recording.mov"
+  |> File.stream!()
+  |> Repo.export_large_object(object_id)
 ```
 
 Use the lower-level API in `PgLargeObjects.LargeObject` to interact with

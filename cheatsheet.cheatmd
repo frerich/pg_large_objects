@@ -1,0 +1,88 @@
+# PgLargeObjects Cheatsheet
+
+> #### Transactions Required {: .info}
+>
+> References to large objects are only valid for the duration of a
+> transaction. In practice, all operations on large objects need to be in
+> an `Repo.transaction/1` or `Repo.transact/1` call.
+>
+> Any large object value will be closed automatically at the end of the
+> transaction.
+
+## Operating on objects as a whole
+
+{: .col-2}
+
+### Streaming API
+
+#### Writing local file to an object
+```elixir
+{:ok, object_id} =
+  "/tmp/bigfile.dat"
+  |> File.stream!()
+  |> Repo.import_large_object()
+```
+
+#### Reading data from an object
+```elixir
+"/tmp/bigfile.dat"
+|> File.stream!()
+|> Repo.export_large_object(object_id)
+```
+
+### Buffered API
+
+#### Writing data to an object
+```elixir
+large_binary = "This is a large binary."
+{:ok, object_id} =
+  Repo.export_large_object(large_binary)
+```
+
+#### Reading data from an object
+```elixir
+{:ok, data} =
+  Repo.export_large_object(object_id)
+```
+
+## Granular access to objects
+
+{: .col-2}
+
+### Create a new object
+```elixir
+{:ok, object_id} =
+  Repo.create_large_object(mode: :write)
+```
+
+### Open an existing object
+```elixir
+# For reading
+{:ok, object} =
+  Repo.open_large_object(object_id)
+
+# For writing
+{:ok, object} =
+  Repo.open_large_object(object_id)
+```
+
+### Read from object
+```elixir
+# Read 1024 bytes
+{:ok, data} =
+  PgLargeObjects.LargeObject.read(object, 1024)
+```
+
+### Write to object
+```elixir
+binary = "Some data to store."
+:ok =
+  PgLargeObjects.LargeObject.write(object, binary)
+```
+
+### Get object size
+```elixir
+{:ok, size} =
+  PgLargeObjects.LargeObject.size(object)
+```
+
