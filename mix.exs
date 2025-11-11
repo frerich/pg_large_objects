@@ -4,7 +4,7 @@ defmodule PgLargeObjects.MixProject do
   def project do
     [
       app: :pg_large_objects,
-      version: "0.1.0",
+      version: version(),
       elixir: "~> 1.19",
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
@@ -64,4 +64,11 @@ defmodule PgLargeObjects.MixProject do
   end
 
   defp dialyzer(_env), do: []
+
+  defp version do
+    case System.cmd("git", ["describe", "--tags"]) do
+      {output, 0} -> String.trim(output)
+      _ -> nil
+    end
+  end
 end
