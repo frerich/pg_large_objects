@@ -98,6 +98,15 @@ defmodule PgLargeObjects.LargeObjectTest do
       assert get_large_object!(oid) == "XYZDEFG"
     end
 
+    test "appends if open mode is `:append`" do
+      {:ok, oid} =
+        with_object("ABCDEFG", [mode: :append], fn lob ->
+          assert :ok == LargeObject.write(lob, "XYZ")
+        end)
+
+      assert get_large_object!(oid) == "ABCDEFGXYZ"
+    end
+
     test "fails given invalid object" do
       with_object("", [mode: :write], fn lob ->
         :ok = LargeObject.remove(TestRepo, lob.oid)

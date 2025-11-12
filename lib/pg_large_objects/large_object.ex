@@ -93,8 +93,9 @@ defmodule PgLargeObjects.LargeObject do
 
   * `:bufsize` - number of bytes to transfer at a time when streaming into/out
     of the object. Defaults to 1MB.
-  * `:mode` - can be one of `:read`, `:write` or `:read_write` indicating
-    whether to open the object for reading, writing, or both. Defaults to `:read`.
+  * `:mode` - can be one of `:read`, `:write`, `:append` or `:read_write`
+    indicating whether to open the object for reading, writing, appending or
+    reading and writing.
 
   ## Return value
 
@@ -117,11 +118,21 @@ defmodule PgLargeObjects.LargeObject do
       case opts[:mode] do
         :read -> Bindings.constant(:inv_read)
         :write -> Bindings.constant(:inv_write)
+        :append -> Bindings.constant(:inv_write)
         :read_write -> Bindings.constant(:inv_read) + Bindings.constant(:inv_write)
         mode -> raise ArgumentError, message: "invalid mode: #{mode}"
       end
 
-    with {:ok, fd} <- Bindings.open(repo, oid, flags) do
+    maybe_seek_to_end = fn
+      fd, :append ->
+        Bindings.lseek64(repo, fd, 0, Bindings.constant(:seek_end))
+
+      _fd, _mode ->
+        {:ok, 0}
+    end
+
+    with {:ok, fd} <- Bindings.open(repo, oid, flags),
+         {:ok, _position} <- maybe_seek_to_end.(fd, opts[:mode]) do
       lob =
         %__MODULE__{
           repo: repo,
