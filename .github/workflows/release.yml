@@ -15,11 +15,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Write VERSION file
-        run: echo $REF_NAME > VERSION
-        env:
-          REF_NAME: ${{ github.ref_name }}
-
       - name: Set up Elixir
         uses: erlef/setup-beam@v1
         with:

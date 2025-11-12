@@ -4,7 +4,7 @@ defmodule PgLargeObjects.MixProject do
   def project do
     [
       app: :pg_large_objects,
-      version: version(),
+      version: "0.1.2",
       elixir: "~> 1.18",
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
@@ -64,11 +64,4 @@ defmodule PgLargeObjects.MixProject do
   end
 
   defp dialyzer(_env), do: []
-
-  defp version do
-    case File.read("VERSION") do
-      {:ok, output} -> String.trim(output)
-      _ -> "0.1.0-dev"
-    end
-  end
 end
