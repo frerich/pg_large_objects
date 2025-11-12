@@ -66,10 +66,7 @@ defmodule PgLargeObjects.LargeObject do
 
   ## Options
 
-  * `:bufsize` - number of bytes to transfer at a time when streaming into/out
-    of the object.
-  * `:mode` - can be one of `:read`, `:write` or `:read_write` indicating
-    whether to open the object for reading, writing, or both.
+  See `open/3` for a list of supported options.
 
   ## Return value
 
