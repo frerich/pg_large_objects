@@ -17,17 +17,16 @@
 
 #### Writing local file to an object
 ```elixir
+stream = File.stream!("/tmp/bigfile.dat")
 {:ok, object_id} =
-  "/tmp/bigfile.dat"
-  |> File.stream!()
-  |> Repo.import_large_object()
+  Repo.import_large_object(stream)
 ```
 
-#### Reading data from an object
+#### Reading object to local file
 ```elixir
-"/tmp/bigfile.dat"
-|> File.stream!()
-|> Repo.export_large_object(object_id)
+stream = File.stream!("/tmp/bigfile.dat")
+:ok =
+  Repo.export_large_object(object_id, into: stream)
 ```
 
 ### Buffered API
@@ -63,7 +62,7 @@ large_binary = "This is a large binary."
 
 # For writing
 {:ok, object} =
-  Repo.open_large_object(object_id)
+  Repo.open_large_object(object_id, mode: :write)
 ```
 
 ### Read from object
