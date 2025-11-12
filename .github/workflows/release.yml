@@ -4,7 +4,7 @@ name: 'Release'
 on:
   push:
     tags:
-      - '[0-9]+.[0-9]+.[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
   release:
@@ -28,7 +28,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files:
-            pg_large_objects-${{ github.ref_name }}.tar
+            pg_large_objects-*.tar
 
       - name: Publish to Hex.pm
         run: mix deps.get && mix hex.publish --yes
