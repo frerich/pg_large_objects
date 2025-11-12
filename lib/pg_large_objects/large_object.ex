@@ -178,6 +178,14 @@ defmodule PgLargeObjects.LargeObject do
 
   Calculates the size (in bytes) of the given large object `lob`.
 
+  > #### Enum.count/1 vs. Enum.size/1 {: .info}
+  >
+  > Note that this is not the same as using `Enum.count/1`; `Enum.count/1`, by
+  > virtue of the `Enumerable` implementation, will return the number of _chunks_
+  > in the given object, i.e. the number of times any streaming access would need
+  > to hit the database. The number of chunks is determined by the `:bufsize`
+  > option given to `create/2` or `open/3`.
+
   ## Return value
 
   * `{:ok, size}` on success, with `size` being the size of the object in

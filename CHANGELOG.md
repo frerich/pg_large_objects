@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.1.3 - ?
+
+  * Document difference between `Enum.count/1` and `PgLargeObject.LargeObjects.size/1`
+
 ## v0.1.2 - 2025-11-12
 
   * Fix incorrect 0.1.0-dev version in package.
