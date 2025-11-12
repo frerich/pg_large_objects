@@ -4,7 +4,7 @@
 
   * Document difference between `Enum.count/1` and `PgLargeObject.LargeObjects.size/1`
   * Reorder chapters in documentation
-  * Add `:append` option to `PgLargeObjects.LargeObject.open/3` and others.
+  * Add `:append` option to `PgLargeObjects.LargeObject.open/3` and others
 
 ## v0.1.2 - 2025-11-12
 
