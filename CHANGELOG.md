@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v0.1.2 - 2025-11-12
+
+  * Fix incorrect 0.1.0-dev version in package.
+  * Fix example in cheatsheet
+
 ## v0.1.1 - 2025-11-11
 
   * Fix typo in Mix package description
