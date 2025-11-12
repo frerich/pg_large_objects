@@ -3,6 +3,7 @@
 ## v0.1.3 - ?
 
   * Document difference between `Enum.count/1` and `PgLargeObject.LargeObjects.size/1`
+  * Reorder chapters in documentation
 
 ## v0.1.2 - 2025-11-12
 
