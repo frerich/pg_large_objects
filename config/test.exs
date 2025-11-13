@@ -11,3 +11,8 @@ config :pg_large_objects, PgLargeObjects.TestRepo,
 
 config :pg_large_objects,
   ecto_repos: [PgLargeObjects.TestRepo]
+
+config :pg_large_objects, PgLargeObjects.TestEndpoint,
+  live_view: [signing_salt: "aaaaaaaa"],
+  secret_key_base: String.duplicate("a", 64),
+  pubsub_server: PgLargeObjects.TestPubSub
