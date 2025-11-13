@@ -42,7 +42,7 @@ end
 Large objects are referenced by object IDs, modelled using the `oid` type in
 PostgreSQL. `Ecto.Migration` has support for this type built-in, e.g.
 
-```
+```elixir
 defmodule MyApp.Repo.Migrations.CreateUploadsTable do
   use Ecto.Migration
 
@@ -59,8 +59,8 @@ end
 
 In the Ecto schema, use plain `:integer` fields for object IDs:
 
-```
-defmodue MyApp.Upload do
+```elixir
+defmodule MyApp.Upload do
   use Ecto.Schema
 
   schema "uploads" do
