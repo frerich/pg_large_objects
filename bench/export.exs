@@ -3,10 +3,13 @@
 {:ok, _pid} = PgLargeObjects.TestRepo.start_link(name: PgLargeObjects.TestRepo)
 
 do_import = fn input, bufsize ->
-  PgLargeObjects.TestRepo.transact(fn ->
-    PgLargeObjects.import(PgLargeObjects.TestRepo, input, bufsize: bufsize)
-    PgLargeObjects.TestRepo.rollback(nil)
-  end)
+  PgLargeObjects.TestRepo.transact(
+    fn ->
+      PgLargeObjects.import(PgLargeObjects.TestRepo, input, bufsize: bufsize)
+      PgLargeObjects.TestRepo.rollback(nil)
+    end,
+    timeout: :infinity
+  )
 end
 
 Benchee.run(
@@ -21,4 +24,3 @@ Benchee.run(
     "large" => String.duplicate("data", 100_000_000)
   }
 )
-
