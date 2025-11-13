@@ -2,11 +2,11 @@
 
 ## v0.2.0 - 2025-11-13
 
-  * Add `PgLargeObject.UploadWriter`
+  * Add `PgLargeObjects.UploadWriter`
 
 ## v0.1.3 - 2025-11-13
 
-  * Document difference between `Enum.count/1` and `PgLargeObject.LargeObjects.size/1`
+  * Document difference between `Enum.count/1` and `PgLargeObjects.LargeObjects.size/1`
   * Reorder chapters in documentation
   * Add `:append` option to `PgLargeObjects.LargeObject.open/3` and others
 
