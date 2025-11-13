@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.2.1 - ?
+
+  * Add 'Considerations' document
+
 ## v0.2.0 - 2025-11-13
 
   * Add `PgLargeObjects.UploadWriter`

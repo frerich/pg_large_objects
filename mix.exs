@@ -24,7 +24,7 @@ defmodule PgLargeObjects.MixProject do
       source_url: "https://github.com/frerich/pg_large_objects",
       docs: [
         main: "readme",
-        extras: ["README.md", "cheatsheet.cheatmd", "CHANGELOG.md", "LICENSE.md"]
+        extras: ["README.md", "cheatsheet.cheatmd", "CONSIDERATIONS.md", "CHANGELOG.md", "LICENSE.md"]
       ]
     ]
   end
