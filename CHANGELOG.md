@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.2.0 - 2025-11-13
+
+  * Add `PgLargeObject.UploadWriter`
+
 ## v0.1.3 - 2025-11-13
 
   * Document difference between `Enum.count/1` and `PgLargeObject.LargeObjects.size/1`

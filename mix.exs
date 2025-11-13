@@ -44,7 +44,9 @@ defmodule PgLargeObjects.MixProject do
       {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
       {:ex_doc, "~> 0.27", only: :dev, runtime: false},
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
-      {:benchee, "~> 1.0", only: [:dev, :test]}
+      {:benchee, "~> 1.0", only: [:dev, :test]},
+      {:phoenix_live_view, "~> 1.1.17", optional: true},
+      {:lazy_html, ">= 0.1.0", only: :test}
     ]
   end
 
