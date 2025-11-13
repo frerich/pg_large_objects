@@ -1,4 +1,4 @@
-# Run via 'MIX_ENV=test mix run bench/export.exs'
+# Run via 'MIX_ENV=test mix run bench/import.exs'
 #
 {:ok, _pid} = PgLargeObjects.TestRepo.start_link(name: PgLargeObjects.TestRepo)
 
