@@ -10,6 +10,8 @@ PostgreSQL databases.
 * Random-access reads and writes to data objects via low-level `PgLargeObjects.LargeObject` API.
 * Extensions to Ecto query DSL for interacting with large objects as part of
   Ecto queries.
+* Ready-made implementation of `Phoenix.LiveView.UploadWriter` for streaming
+  client uploads straight into the database.
 
 ## Why Use Large Objects?
 
