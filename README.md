@@ -6,8 +6,10 @@ PostgreSQL databases.
 
 ## Features
 
-* Easy and memory-efficient streaming of large amounts of data (up to 4TB) using `PgLargeObjects` high-level API.
-* Random-access reads and writes to data objects via low-level `PgLargeObjects.LargeObject` API.
+* Easy and memory-efficient streaming of large amounts of data (up to 4TB)
+  using `PgLargeObjects` high-level API.
+* Random-access reads and writes to data objects via low-level
+  `PgLargeObjects.LargeObject` API.
 * Extensions to Ecto query DSL for interacting with large objects as part of
   Ecto queries.
 * Ready-made implementation of `Phoenix.LiveView.UploadWriter` for streaming
@@ -15,15 +17,31 @@ PostgreSQL databases.
 
 ## Why Use Large Objects?
 
-An application wishing to store larger amounts of data typically has two options for doing so:
+An application wishing to store larger amounts of data typically has two
+options for doing so:
 
-1. A new column on some table can be introduced; Postgres features a `bytea` type for this purpose. This is easy to implement but suffers from requiring to hold the complete data in memory when reading or writing, something which may not be viable beyond a few dozen megabytes. Efficient streaming or random-access operations are not practical.
-2. A separate cloud storage (e.g. AWS S3) could be used. This permits streaming but requires complicating the tech stack by depending on a new service. Bridging the two systems (e.g. ‘Delete all uploads for a given user ID’) requires Elixir support.
+1. A new column on some table can be introduced; Postgres features a `bytea`
+   type for this purpose. This is easy to implement but suffers from requiring
+   to hold the complete data in memory when reading or writing, something which
+   may not be viable beyond a few dozen megabytes. Efficient streaming or
+   random-access operations are not practical.
+2. A separate cloud storage (e.g. AWS S3) could be used. This permits streaming
+   but requires complicating the tech stack by depending on a new service.
+   Bridging the two systems (e.g. ‘Delete all uploads for a given user ID’)
+    requires Elixir support.
 
-PostgreSQL features a ‘large objects’ facility which enables efficient streaming access to large (up to 4TB) files. This solves these problems:
+PostgreSQL features a ‘large objects’ facility which enables efficient
+streaming access to large (up to 4TB) files. This solves these problems:
 
-1. Unlike values in table columns, large objects can be streamed into/out of the database and permit random access operations.
-2. Unlike e.g. S3, no new technology is needed. Large objects live side-by-side with the tables referencing them, operations like ‘Delete all uploads for a given user ID’ are just one `SELECT` statement.
+1. Unlike values in table columns, large objects can be streamed into/out of
+   the database and permit random access operations.
+2. Unlike e.g. S3, no new technology is needed. Large objects live side-by-side
+   with the tables referencing them, operations like ‘Delete all uploads for a
+   given user ID’ are just one `SELECT` statement.
+
+However, there are trade offs. See the [Considerations](CONSIDERATIONS.md)
+document for aspects to take into account when deciding if large objects
+are good choice for your use case.
 
 ## Installation
 
