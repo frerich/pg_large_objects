@@ -11,7 +11,7 @@ if Code.ensure_loaded?(Phoenix.LiveView.UploadWriter) do
 
     ```elixir
     socket
-    |> allow_upload(:avatar,
+    |> allow_upload(:photo,
       accept: :any,
       writer: fn _name, _entry, _socket ->
         {PgLargeObjects.UploadWriter, repo: MyApp.Repo}

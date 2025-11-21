@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.2.2 - ?
+
+  * Fix `PgLargeObjects.LargeObject.UploadWriter` documentation
+
 ## v0.2.1 - 2025-11-14
 
   * Add 'Considerations' document
