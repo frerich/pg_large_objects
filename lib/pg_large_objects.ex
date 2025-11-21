@@ -60,6 +60,16 @@ defmodule PgLargeObjects do
   Depending on the `:into` option, the data is returned a single binary or fed
   into a given `Collectable`.
 
+  To treat a large object as an `Enumerable` and pass it around as a stream,
+  reach for the lower-level API in `PgLargeObjects.LargeObject`, e.g.:
+
+  ```elixir
+  def stream_object!(object_id) do
+    {:ok, object} = PgLargeObject.LargeObject.open(object_id)
+    object
+  end
+  ```
+
   This function needs to be executed as part of a transaction.
 
   ## Options

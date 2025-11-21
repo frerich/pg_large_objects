@@ -2,6 +2,7 @@
 
 ## v0.2.2 - ?
 
+  * Improve `PgLargeObjects.export_large_object/3` documentation
   * Fix `PgLargeObjects.LargeObject.UploadWriter` documentation
   * Relax dependency on phoenix_live_view
 
