@@ -45,7 +45,7 @@ defmodule PgLargeObjects.MixProject do
       {:ex_doc, "~> 0.27", only: :dev, runtime: false},
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
       {:benchee, "~> 1.0", only: [:dev, :test]},
-      {:phoenix_live_view, "~> 1.1.17", optional: true},
+      {:phoenix_live_view, "~> 0.19.4 or ~> 0.20.0 or ~> 1.0", optional: true},
       {:lazy_html, ">= 0.1.0", only: :test}
     ]
   end

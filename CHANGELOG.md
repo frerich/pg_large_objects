@@ -3,6 +3,7 @@
 ## v0.2.2 - ?
 
   * Fix `PgLargeObjects.LargeObject.UploadWriter` documentation
+  * Relax dependency on phoenix_live_view
 
 ## v0.2.1 - 2025-11-14
 
