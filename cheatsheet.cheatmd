@@ -35,7 +35,7 @@ stream = File.stream!("/tmp/bigfile.dat")
 ```elixir
 large_binary = "This is a large binary."
 {:ok, object_id} =
-  Repo.export_large_object(large_binary)
+  Repo.import_large_object(large_binary)
 ```
 
 #### Reading data from an object
