@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.2.3 - 2025-11-27
+
+  * Fix example in cheat sheet documentation
+
 ## v0.2.2 - 2025-11-21
 
   * Run CI check with 1.19.3
