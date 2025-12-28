@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.2.4 - 2025-12-28
+
+  * Fix hyperlink in documentation
+
 ## v0.2.3 - 2025-11-27
 
   * Fix example in cheat sheet documentation
