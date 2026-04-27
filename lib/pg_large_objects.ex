@@ -96,7 +96,11 @@ defmodule PgLargeObjects do
         {:ok, buffer} = StringIO.open("", encoding: :latin1)
 
         result =
-          with :ok <- export(repo, oid, into: IO.binstream(buffer, opts[:bufsize]), bufsize: opts[:bufsize]) do
+          with :ok <-
+                 export(repo, oid,
+                   into: IO.binstream(buffer, opts[:bufsize]),
+                   bufsize: opts[:bufsize]
+                 ) do
             {_input, output} = StringIO.contents(buffer)
             {:ok, output}
           end
