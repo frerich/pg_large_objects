@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v0.2.5 - 2026-04-27
+
+  * Fix `PgLargeObjects.export/3` not honoring `:bufsize` option if `:into`
+    option is not given.
+
 ## v0.2.4 - 2025-12-28
 
   * Fix hyperlink in documentation
