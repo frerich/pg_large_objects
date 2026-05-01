@@ -38,9 +38,12 @@ defmodule PgLargeObjects do
     case data do
       binary when is_binary(binary) ->
         {:ok, buffer} = StringIO.open(binary, encoding: :latin1)
-        result = import(repo, IO.binstream(buffer, opts[:bufsize]), opts)
-        StringIO.close(buffer)
-        result
+
+        try do
+          import(repo, IO.binstream(buffer, opts[:bufsize]), opts)
+        after
+          StringIO.close(buffer)
+        end
 
       enumerable ->
         with {:ok, lob} <- LargeObject.create(repo) do
@@ -96,16 +99,18 @@ defmodule PgLargeObjects do
         {:ok, buffer} = StringIO.open("", encoding: :latin1)
 
         result =
-          with :ok <-
-                 export(repo, oid,
-                   into: IO.binstream(buffer, opts[:bufsize]),
-                   bufsize: opts[:bufsize]
-                 ) do
-            {_input, output} = StringIO.contents(buffer)
-            {:ok, output}
+          try do
+            with :ok <-
+                   export(repo, oid,
+                     into: IO.binstream(buffer, opts[:bufsize]),
+                     bufsize: opts[:bufsize]
+                   ) do
+              {_input, output} = StringIO.contents(buffer)
+              {:ok, output}
+            end
+          after
+            StringIO.close(buffer)
           end
-
-        StringIO.close(buffer)
 
         result
 
