@@ -57,15 +57,15 @@ defmodule PgLargeObjects do
   Export data out of large object.
 
   This exports the data in the large object referenced by the object ID `oid`.
-  Depending on the `:into` option, the data is returned a single binary or fed
-  into a given `Collectable`.
+  Depending on the `:into` option, the data is returned as a single binary or
+  fed into a given `Collectable`.
 
   To treat a large object as an `Enumerable` and pass it around as a stream,
   reach for the lower-level API in `PgLargeObjects.LargeObject`, e.g.:
 
   ```elixir
-  def stream_object!(object_id) do
-    {:ok, object} = PgLargeObject.LargeObject.open(object_id)
+  def stream_object!(repo, object_id) do
+    {:ok, object} = PgLargeObjects.LargeObject.open(repo, object_id)
     object
   end
   ```
