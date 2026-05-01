@@ -208,7 +208,8 @@ defmodule PgLargeObjects.LargeObjectTest do
         assert {:ok, 1} = LargeObject.seek(lob, 0, :current)
         assert {:ok, "B"} == LargeObject.read(lob, 1)
 
-        # Seeting to 0 bytes from the end moves the cursor one past the last byte.
+        # Setting to 0 bytes from the end moves the cursor one past the last
+        # byte.
         assert {:ok, 7} = LargeObject.seek(lob, 0, :end)
         assert {:ok, ""} == LargeObject.read(lob, 1)
       end)
