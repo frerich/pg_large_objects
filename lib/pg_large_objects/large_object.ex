@@ -186,7 +186,7 @@ defmodule PgLargeObjects.LargeObject do
 
   Calculates the size (in bytes) of the given large object `lob`.
 
-  > #### Enum.count/1 vs. Enum.size/1 {: .info}
+  > #### Enum.count/1 vs. LargeObject.size/1 {: .info}
   >
   > Note that this is not the same as using `Enum.count/1`; `Enum.count/1`, by
   > virtue of the `Enumerable` implementation, will return the number of _chunks_
