@@ -13,7 +13,7 @@ defmodule PgLargeObjects.LargeObject do
   > #### Transactions Required {: .info}
   >
   > All operations on `LargeObject` values *must* take place within a database
-  > transactions since the internal handle managed by the structure is only
+  > transaction since the internal handle managed by the structure is only
   > valid for the duration of a transaction.
   >
   > Any large object value will be closed automatically at the end of the
@@ -246,8 +246,8 @@ defmodule PgLargeObjects.LargeObject do
   @doc """
   Read data from large object.
 
-  Reads a `length` bytes of data from the given large object `lob`, starting at
-  the current iosition in the object. Advanced the position by the number of
+  Reads `length` bytes of data from the given large object `lob`, starting at
+  the current position in the object. Advances the position by the number of
   bytes read, or until the end of file. The read position will not be advanced
   when the current position is beyond the end of the file.
 

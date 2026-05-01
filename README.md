@@ -28,7 +28,7 @@ options for doing so:
 2. A separate cloud storage (e.g. AWS S3) could be used. This permits streaming
    but requires complicating the tech stack by depending on a new service.
    Bridging the two systems (e.g. ‘Delete all uploads for a given user ID’)
-    requires Elixir support.
+    requires custom application code.
 
 PostgreSQL features a ‘large objects’ facility which enables efficient
 streaming access to large (up to 4TB) files. This solves these problems:
@@ -39,9 +39,9 @@ streaming access to large (up to 4TB) files. This solves these problems:
    with the tables referencing them, operations like ‘Delete all uploads for a
    given user ID’ are just one `SELECT` statement.
 
-However, there are trade offs. See the [Considerations](CONSIDERATIONS.md)
+However, there are trade-offs. See the [Considerations](CONSIDERATIONS.md)
 document for aspects to take into account when deciding if large objects
-are good choice for your use case.
+are a good choice for your use case.
 
 ## Installation
 
@@ -108,7 +108,7 @@ end
 
 Use the high-level APIs `PgLargeObjects.import/3` and `PgLargeObjects.export/3`
 (exposed as `import_large_object/2` and `export_large_object/2` on the
- applications' repository module) for importing data into or exporting data out
+ application's repository module) for importing data into or exporting data out
 of the database:
 
 ```elixir
