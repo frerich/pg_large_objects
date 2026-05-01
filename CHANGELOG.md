@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v0.2.6 - 2026-05-01
+
+  * Fix grammar and typos in the documentation
+  * Fix example code in `PgLargeObjects.export/3` API docs
+  * Fix admonition title in `PgLargeObjects.LargeObject.size/1` API docs
+  * Fix potential resource leak in `PgLargeObjects.import/3` and `export/3`.
+
 ## v0.2.5 - 2026-04-27
 
   * Fix `PgLargeObjects.export/3` not honoring `:bufsize` option if `:into`
