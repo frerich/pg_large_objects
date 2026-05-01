@@ -32,7 +32,7 @@ defmodule PgLargeObjects.LargeObjectTest do
     end
 
     test "fails given invalid object ID" do
-      assert {:error, :not_found} == LargeObject.open(TestRepo, 12_345)
+      assert {:error, :not_found} == LargeObject.remove(TestRepo, 12_345)
     end
   end
 
