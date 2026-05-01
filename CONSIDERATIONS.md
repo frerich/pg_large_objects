@@ -8,9 +8,9 @@ PostgreSQL 4.2 was released on Jun 30th, 1994. The large objects facility has
 been around for a long time!
 
 Yet, it is fairly unknown to many programmers - or considered too unwieldy to
-use for productive usage. This is not by accident - there are various trade
-offs to consider when deciding if large objects are a good mechanism for
-storing large amounts of binary data.
+use for productive usage. This is not by accident - there are various trade-offs
+to consider when deciding if large objects are a good mechanism for storing
+large amounts of binary data.
 
 This document attempts to collect and discuss some of these considerations. If
 you feel there are other aspects to highlight, or if any of the items below
@@ -41,14 +41,14 @@ mechanisms for storing large objects.
 For example, the [AWS RDS
 documentation](https://aws.amazon.com/rds/postgresql/pricing/) (RDS is Amazon's
 managed database offering) explains that at the time of this writing, 1GB of
-General Purpose storage for a in the us-east-1 region costs $0.115 per month
+General Purpose storage in the `us-east-1` region costs $0.115 per month
 for a PostgreSQL database. The [AWS S3 documentation](https://aws.amazon.com/s3/pricing/) (S3 is Amazon's
 object storage offering) documents, at the time of this writing, that storing
-1GB of data in the us-east-1 region is a mere $0.023 per month!
+1GB of data in the `us-east-1` region is a mere $0.023 per month!
 
-I.e. when using Amazon cloud services in the us-east-1 region, storing data in
-RDS is five times as expensive as storing it in S3. Depending on the amount of
-data and your budget, this might be a significant difference.
+I.e. when using Amazon cloud services in the `us-east-1` region, storing data
+in RDS is five times as expensive as storing it in S3. Depending on the amount
+of data and your budget, this might be a significant difference.
 
 Make sure to check the pricing (if applicable) for storage used by your
 PostgreSQL database and consider the change in the decision whether to use
@@ -73,6 +73,6 @@ frerich@Mac ~ % pg_dump --help
 ```
 
 Consider your current backup mechanism and see if it's configured to include or
-exclude large objects. Decide on the important of large objects for your use
+exclude large objects. Decide on the importance of large objects for your use
 case and include that in your decision on how often large objects should be
 included in backups.
