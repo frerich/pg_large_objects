@@ -101,6 +101,16 @@ defmodule PgLargeObjects.LargeObjectTest do
         assert {:error, :not_found} == LargeObject.size(lob)
       end)
     end
+
+    test "preserves read position" do
+      with_object("ABCDEFGHIJ", fn lob ->
+        {:ok, "ABC"} = LargeObject.read(lob, 3)
+        assert {:ok, 3} = LargeObject.tell(lob)
+        assert {:ok, 10} = LargeObject.size(lob)
+        assert {:ok, 3} = LargeObject.tell(lob)
+        assert {:ok, "DEF"} = LargeObject.read(lob, 3)
+      end)
+    end
   end
 
   describe "write/2" do
