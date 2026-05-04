@@ -79,5 +79,15 @@ defmodule PgLargeObjectsTest do
         assert {:error, :not_found} = PgLargeObjects.export(TestRepo, 12_345)
       end)
     end
+
+    test "handles invalid object IDs with collectable" do
+      {:ok, pid} = StringIO.open("", encoding: :latin1)
+      stream = IO.binstream(pid, 3)
+
+      TestRepo.transaction(fn ->
+        assert {:error, :not_found} =
+                 PgLargeObjects.export(TestRepo, 12_345, into: stream)
+      end)
+    end
   end
 end
