@@ -8,6 +8,22 @@ defmodule PgLargeObjects.LargeObjectTest do
       assert {:ok, %LargeObject{oid: oid}} = LargeObject.create(TestRepo)
       assert %{rows: [[^oid]]} = TestRepo.query!("SELECT oid FROM pg_largeobject_metadata")
     end
+
+    test "creates an object with custom bufsize" do
+      assert {:ok, %LargeObject{bufsize: 512}} = LargeObject.create(TestRepo, bufsize: 512)
+    end
+
+    test "creates an object opened for writing" do
+      {:ok, lob} = LargeObject.create(TestRepo, mode: :write)
+      assert :ok == LargeObject.write(lob, "test")
+    end
+
+    test "creates an object opened for read_write by default" do
+      {:ok, lob} = LargeObject.create(TestRepo)
+      assert :ok == LargeObject.write(lob, "test")
+      assert {:ok, 0} = LargeObject.seek(lob, 0)
+      assert {:ok, "test"} == LargeObject.read(lob, 10)
+    end
   end
 
   describe "open/3" do
