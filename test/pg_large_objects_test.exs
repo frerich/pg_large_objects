@@ -29,6 +29,19 @@ defmodule PgLargeObjectsTest do
       assert data == get_large_object!(oid)
     end
 
+    test "can import large binary spanning multiple chunks" do
+      # 200KB with 64KB bufsize = 4 chunks (tests multi-chunk path)
+      data = :crypto.strong_rand_bytes(200_000)
+
+      {:ok, oid} =
+        TestRepo.transaction(fn ->
+          {:ok, oid} = PgLargeObjects.import(TestRepo, data, bufsize: 65_536)
+          oid
+        end)
+
+      assert data == get_large_object!(oid)
+    end
+
     test "can import from enumerable" do
       data = :crypto.strong_rand_bytes(Enum.random(0..1024))
 
