@@ -36,6 +36,27 @@ defmodule PgLargeObjects.LargeObjectTest do
     test "fails given invalid object ID" do
       assert {:error, :not_found} == LargeObject.open(TestRepo, 12_345)
     end
+
+    test "opens for read_write mode allowing both read and write" do
+      oid = put_large_object!("ABCDEFG")
+
+      TestRepo.transaction(fn ->
+        {:ok, lob} = LargeObject.open(TestRepo, oid, mode: :read_write)
+        assert :ok == LargeObject.write(lob, "XYZ")
+        assert {:ok, 0} = LargeObject.seek(lob, 0)
+        assert {:ok, "XYZ"} == LargeObject.read(lob, 3)
+      end)
+    end
+
+    test "raises ArgumentError given invalid mode" do
+      oid = put_large_object!("test")
+
+      assert_raise ArgumentError, ~r/invalid mode/, fn ->
+        TestRepo.transaction(fn ->
+          LargeObject.open(TestRepo, oid, mode: :invalid)
+        end)
+      end
+    end
   end
 
   describe "remove/2" do
