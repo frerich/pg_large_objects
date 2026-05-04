@@ -344,7 +344,31 @@ defmodule PgLargeObjects.LargeObjectTest do
   end
 
   describe "Enumerable implementation" do
-    test "raises on read error" do
+    test "Enum.to_list returns chunks of data" do
+      with_object("ABCDEFGHIJ", [bufsize: 4], fn lob ->
+        assert Enum.to_list(lob) == ["ABCD", "EFGH", "IJ"]
+      end)
+    end
+
+    test "Enum.at returns the nth chunk" do
+      with_object("ABCDEFGHIJ", [bufsize: 4], fn lob ->
+        assert Enum.at(lob, 1) == "EFGH"
+      end)
+    end
+
+    test "Enum.count returns the number of chunks" do
+      with_object("ABCDEFGHIJ", [bufsize: 4], fn lob ->
+        assert Enum.count(lob) == 3
+      end)
+    end
+
+    test "Enum.slice returns a subset of chunks" do
+      with_object("ABCDEFGHIJKL", [bufsize: 4], fn lob ->
+        assert Enum.slice(lob, 1..2) == ["EFGH", "IJKL"]
+      end)
+    end
+
+    test "raises on read error when enumerating a closed object" do
       oid = put_large_object!("hello")
 
       TestRepo.transaction(fn ->
