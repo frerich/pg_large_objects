@@ -61,4 +61,40 @@ defmodule PgLargeObjects.RepoTest do
       assert {"", ^data} = StringIO.contents(pid)
     end
   end
+
+  describe "create_large_object/1" do
+    test "creates and opens a large object" do
+      TestRepo.transaction(fn ->
+        assert {:ok, %PgLargeObjects.LargeObject{}} = TestRepo.create_large_object()
+      end)
+    end
+  end
+
+  describe "open_large_object/2" do
+    test "opens an existing large object" do
+      oid = put_large_object!("test data")
+
+      TestRepo.transaction(fn ->
+        assert {:ok, %PgLargeObjects.LargeObject{oid: ^oid}} =
+                 TestRepo.open_large_object(oid)
+      end)
+    end
+
+    test "returns error for invalid oid" do
+      TestRepo.transaction(fn ->
+        assert {:error, :not_found} = TestRepo.open_large_object(12_345)
+      end)
+    end
+  end
+
+  describe "remove_large_object/1" do
+    test "removes an existing large object" do
+      oid = put_large_object!("test data")
+      assert :ok == TestRepo.remove_large_object(oid)
+    end
+
+    test "returns error for invalid oid" do
+      assert {:error, :not_found} = TestRepo.remove_large_object(12_345)
+    end
+  end
 end
