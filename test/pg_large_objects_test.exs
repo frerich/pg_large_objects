@@ -17,6 +17,18 @@ defmodule PgLargeObjectsTest do
       assert data == get_large_object!(oid)
     end
 
+    test "can import binary with custom bufsize" do
+      data = :crypto.strong_rand_bytes(256)
+
+      {:ok, oid} =
+        TestRepo.transaction(fn ->
+          {:ok, oid} = PgLargeObjects.import(TestRepo, data, bufsize: 64)
+          oid
+        end)
+
+      assert data == get_large_object!(oid)
+    end
+
     test "can import from enumerable" do
       data = :crypto.strong_rand_bytes(Enum.random(0..1024))
 
