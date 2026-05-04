@@ -310,7 +310,22 @@ defmodule PgLargeObjects.LargeObjectTest do
   end
 
   describe "Collectable implementation" do
-    test "raises when writing to a read-only object" do
+    test "Stream.into writes data to object" do
+      {:ok, oid} =
+        TestRepo.transaction(fn ->
+          {:ok, lob} = LargeObject.create(TestRepo, mode: :write)
+
+          ["Hello", ", ", "World!"]
+          |> Stream.into(lob)
+          |> Stream.run()
+
+          lob.oid
+        end)
+
+      assert get_large_object!(oid) == "Hello, World!"
+    end
+
+    test "raises on write error when streaming into read-only object" do
       oid = put_large_object!("hello")
 
       TestRepo.transaction(fn ->
