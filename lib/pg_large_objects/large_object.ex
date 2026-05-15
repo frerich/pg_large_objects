@@ -432,18 +432,29 @@ defimpl Enumerable, for: PgLargeObjects.LargeObject do
       {:ok, size} ->
         slicing_fun = fn
           start, length, 1 ->
-            {:ok, _} = PgLargeObjects.LargeObject.seek(lob, start * lob.bufsize)
+            case PgLargeObjects.LargeObject.seek(lob, start * lob.bufsize) do
+              {:ok, _} -> :ok
+              {:error, reason} -> raise "failed to seek in large object: #{inspect(reason)}"
+            end
 
             for _ <- 0..(length - 1) do
-              {:ok, data} = PgLargeObjects.LargeObject.read(lob, lob.bufsize)
-              data
+              case PgLargeObjects.LargeObject.read(lob, lob.bufsize) do
+                {:ok, data} -> data
+                {:error, reason} -> raise "failed to read from large object: #{inspect(reason)}"
+              end
             end
 
           start, length, step ->
             for i <- 0..(length - 1)//step do
-              {:ok, _} = PgLargeObjects.LargeObject.seek(lob, (start + i) * lob.bufsize)
-              {:ok, data} = PgLargeObjects.LargeObject.read(lob, lob.bufsize)
-              data
+              case PgLargeObjects.LargeObject.seek(lob, (start + i) * lob.bufsize) do
+                {:ok, _} -> :ok
+                {:error, reason} -> raise "failed to seek in large object: #{inspect(reason)}"
+              end
+
+              case PgLargeObjects.LargeObject.read(lob, lob.bufsize) do
+                {:ok, data} -> data
+                {:error, reason} -> raise "failed to read from large object: #{inspect(reason)}"
+              end
             end
         end
 

@@ -382,6 +382,24 @@ defmodule PgLargeObjects.LargeObjectTest do
         assert result == {:error, Enumerable.PgLargeObjects.LargeObject}
       end)
     end
+
+    test "slice/1 raises on seek error" do
+      oid = put_large_object!("hello")
+
+      TestRepo.transaction(fn ->
+        {:ok, lob} = LargeObject.open(TestRepo, oid, bufsize: 2)
+
+        # Get slice function
+        {:ok, _size, slicing_fun} = Enumerable.slice(lob)
+
+        # Delete object so seek fails
+        LargeObject.remove(TestRepo, lob.oid)
+
+        assert_raise RuntimeError, fn ->
+          slicing_fun.(0, 1, 1)
+        end
+      end)
+    end
   end
 
   defp with_object(data, opts \\ [], fun) do
