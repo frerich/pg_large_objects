@@ -379,8 +379,13 @@ defimpl Collectable, for: PgLargeObjects.LargeObject do
         end
 
       lob, :done ->
-        LargeObject.close(lob)
-        lob
+        case LargeObject.close(lob) do
+          :ok ->
+            lob
+
+          {:error, reason} ->
+            raise "failed to close large object: #{inspect(reason)}"
+        end
 
       _lob, :halt ->
         :ok

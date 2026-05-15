@@ -323,6 +323,24 @@ defmodule PgLargeObjects.LargeObjectTest do
         end
       end)
     end
+
+    test "raises when closing an already-closed object" do
+      oid = put_large_object!("hello")
+
+      TestRepo.transaction(fn ->
+        {:ok, lob} = LargeObject.open(TestRepo, oid, mode: :write)
+
+        # Close the fd manually so the Collectable's close on :done will fail
+        LargeObject.close(lob)
+
+        assert_raise RuntimeError, ~r/failed to close large object/, fn ->
+          # Empty stream: no writes, only :done triggers close
+          []
+          |> Stream.into(lob)
+          |> Stream.run()
+        end
+      end)
+    end
   end
 
   defp with_object(data, opts \\ [], fun) do
