@@ -370,8 +370,13 @@ defimpl Collectable, for: PgLargeObjects.LargeObject do
 
     collector = fn
       lob, {:cont, data} ->
-        LargeObject.write(lob, data)
-        lob
+        case LargeObject.write(lob, data) do
+          :ok ->
+            lob
+
+          {:error, reason} ->
+            raise "failed to write to large object: #{inspect(reason)}"
+        end
 
       lob, :done ->
         LargeObject.close(lob)

@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.2.7 - Unreleased
+
+  * Fix `Collectable` implementation silently ignoring write errors.
+
 ## v0.2.6 - 2026-05-01
 
   * Fix grammar and typos in the documentation

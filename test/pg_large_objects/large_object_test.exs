@@ -309,6 +309,22 @@ defmodule PgLargeObjects.LargeObjectTest do
     end
   end
 
+  describe "Collectable implementation" do
+    test "raises when writing to a read-only object" do
+      oid = put_large_object!("hello")
+
+      TestRepo.transaction(fn ->
+        {:ok, lob} = LargeObject.open(TestRepo, oid, mode: :read)
+
+        assert_raise RuntimeError, ~r/failed to write to large object/, fn ->
+          ["new data"]
+          |> Stream.into(lob)
+          |> Stream.run()
+        end
+      end)
+    end
+  end
+
   defp with_object(data, opts \\ [], fun) do
     oid = put_large_object!(data)
 
