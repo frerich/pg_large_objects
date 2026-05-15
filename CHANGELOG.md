@@ -5,6 +5,7 @@
   * Fix `Collectable` implementation silently ignoring write errors.
   * Fix `Collectable` implementation silently ignoring close errors.
   * Fix `Enumerable` implementation crashing with `CaseClauseError` on read errors.
+  * Fix `Enumerable.count/1` returning invalid protocol value on error.
 
 ## v0.2.6 - 2026-05-01
 

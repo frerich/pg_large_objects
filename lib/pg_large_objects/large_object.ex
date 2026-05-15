@@ -419,8 +419,9 @@ defimpl Enumerable, for: PgLargeObjects.LargeObject do
   end
 
   def count(lob) do
-    with {:ok, size} <- PgLargeObjects.LargeObject.size(lob) do
-      {:ok, ceil(size / lob.bufsize)}
+    case PgLargeObjects.LargeObject.size(lob) do
+      {:ok, size} -> {:ok, ceil(size / lob.bufsize)}
+      {:error, _} -> {:error, __MODULE__}
     end
   end
 
