@@ -403,11 +403,16 @@ defimpl Enumerable, for: PgLargeObjects.LargeObject do
       case PgLargeObjects.LargeObject.read(lob, lob.bufsize) do
         {:ok, ""} -> {:halt, lob}
         {:ok, data} -> {[data], lob}
+        {:error, reason} -> raise "failed to read from large object: #{inspect(reason)}"
       end
     end
 
     after_fun = fn lob ->
-      PgLargeObjects.LargeObject.close(lob)
+      try do
+        PgLargeObjects.LargeObject.close(lob)
+      rescue
+        _ -> :ok
+      end
     end
 
     Stream.resource(start_fun, next_fun, after_fun).(acc, fun)
