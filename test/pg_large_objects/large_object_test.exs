@@ -370,6 +370,18 @@ defmodule PgLargeObjects.LargeObjectTest do
         assert result == {:error, Enumerable.PgLargeObjects.LargeObject}
       end)
     end
+
+    test "slice/1 returns {:error, module} when object is invalid" do
+      oid = put_large_object!("hello")
+
+      TestRepo.transaction(fn ->
+        {:ok, lob} = LargeObject.open(TestRepo, oid)
+        LargeObject.remove(TestRepo, lob.oid)
+
+        result = Enumerable.slice(lob)
+        assert result == {:error, Enumerable.PgLargeObjects.LargeObject}
+      end)
+    end
   end
 
   defp with_object(data, opts \\ [], fun) do

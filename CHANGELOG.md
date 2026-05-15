@@ -6,6 +6,7 @@
   * Fix `Collectable` implementation silently ignoring close errors.
   * Fix `Enumerable` implementation crashing with `CaseClauseError` on read errors.
   * Fix `Enumerable.count/1` returning invalid protocol value on error.
+  * Fix `Enumerable.slice/1` crashing with `MatchError` when object is invalid.
 
 ## v0.2.6 - 2026-05-01
 
