@@ -343,6 +343,23 @@ defmodule PgLargeObjects.LargeObjectTest do
     end
   end
 
+  describe "Enumerable implementation" do
+    test "raises on read error" do
+      oid = put_large_object!("hello")
+
+      TestRepo.transaction(fn ->
+        {:ok, lob} = LargeObject.open(TestRepo, oid)
+
+        # Delete the object so reads will fail
+        LargeObject.remove(TestRepo, lob.oid)
+
+        assert_raise RuntimeError, fn ->
+          Enum.to_list(lob)
+        end
+      end)
+    end
+  end
+
   defp with_object(data, opts \\ [], fun) do
     oid = put_large_object!(data)
 

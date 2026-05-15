@@ -4,6 +4,7 @@
 
   * Fix `Collectable` implementation silently ignoring write errors.
   * Fix `Collectable` implementation silently ignoring close errors.
+  * Fix `Enumerable` implementation crashing with `CaseClauseError` on read errors.
 
 ## v0.2.6 - 2026-05-01
 
