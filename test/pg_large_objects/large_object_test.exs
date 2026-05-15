@@ -358,6 +358,18 @@ defmodule PgLargeObjects.LargeObjectTest do
         end
       end)
     end
+
+    test "count/1 returns {:error, module} when object is invalid" do
+      oid = put_large_object!("hello")
+
+      TestRepo.transaction(fn ->
+        {:ok, lob} = LargeObject.open(TestRepo, oid)
+        LargeObject.remove(TestRepo, lob.oid)
+
+        result = Enumerable.count(lob)
+        assert result == {:error, Enumerable.PgLargeObjects.LargeObject}
+      end)
+    end
   end
 
   defp with_object(data, opts \\ [], fun) do
