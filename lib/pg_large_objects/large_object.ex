@@ -428,25 +428,29 @@ defimpl Enumerable, for: PgLargeObjects.LargeObject do
   def member?(_lob, _element), do: {:error, __MODULE__}
 
   def slice(lob) do
-    slicing_fun = fn
-      start, length, 1 ->
-        PgLargeObjects.LargeObject.seek(lob, start * lob.bufsize)
+    case count(lob) do
+      {:ok, size} ->
+        slicing_fun = fn
+          start, length, 1 ->
+            {:ok, _} = PgLargeObjects.LargeObject.seek(lob, start * lob.bufsize)
 
-        for _ <- 0..(length - 1) do
-          {:ok, data} = PgLargeObjects.LargeObject.read(lob, lob.bufsize)
-          data
+            for _ <- 0..(length - 1) do
+              {:ok, data} = PgLargeObjects.LargeObject.read(lob, lob.bufsize)
+              data
+            end
+
+          start, length, step ->
+            for i <- 0..(length - 1)//step do
+              {:ok, _} = PgLargeObjects.LargeObject.seek(lob, (start + i) * lob.bufsize)
+              {:ok, data} = PgLargeObjects.LargeObject.read(lob, lob.bufsize)
+              data
+            end
         end
 
-      start, length, step ->
-        for i <- 0..(length - 1)//step do
-          PgLargeObjects.LargeObject.seek(lob, (start + i) * lob.bufsize)
-          {:ok, data} = PgLargeObjects.LargeObject.read(lob, lob.bufsize)
-          data
-        end
+        {:ok, size, slicing_fun}
+
+      {:error, _} ->
+        {:error, __MODULE__}
     end
-
-    {:ok, size} = count(lob)
-
-    {:ok, size, slicing_fun}
   end
 end
