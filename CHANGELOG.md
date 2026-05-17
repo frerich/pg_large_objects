@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## v0.2.7 - Unreleased
+## v0.2.7 - 2026-05-17
 
   * Fix `Collectable` implementation silently ignoring write errors.
   * Fix `Collectable` implementation silently ignoring close errors.
