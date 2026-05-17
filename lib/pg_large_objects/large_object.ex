@@ -430,38 +430,38 @@ defimpl Enumerable, for: PgLargeObjects.LargeObject do
   def slice(lob) do
     case count(lob) do
       {:ok, size} ->
-        slicing_fun = fn
-          start, length, 1 ->
-            case PgLargeObjects.LargeObject.seek(lob, start * lob.bufsize) do
-              {:ok, _} -> :ok
-              {:error, reason} -> raise "failed to seek in large object: #{inspect(reason)}"
-            end
-
-            for _ <- 0..(length - 1) do
-              case PgLargeObjects.LargeObject.read(lob, lob.bufsize) do
-                {:ok, data} -> data
-                {:error, reason} -> raise "failed to read from large object: #{inspect(reason)}"
-              end
-            end
-
-          start, length, step ->
-            for i <- 0..(length - 1)//step do
-              case PgLargeObjects.LargeObject.seek(lob, (start + i) * lob.bufsize) do
-                {:ok, _} -> :ok
-                {:error, reason} -> raise "failed to seek in large object: #{inspect(reason)}"
-              end
-
-              case PgLargeObjects.LargeObject.read(lob, lob.bufsize) do
-                {:ok, data} -> data
-                {:error, reason} -> raise "failed to read from large object: #{inspect(reason)}"
-              end
-            end
-        end
-
-        {:ok, size, slicing_fun}
+        {:ok, size, fn start, length, step -> slicing_fun(lob, start, length, step) end}
 
       {:error, _} ->
         {:error, __MODULE__}
+    end
+  end
+
+  defp slicing_fun(lob, start, length, 1) do
+    case PgLargeObjects.LargeObject.seek(lob, start * lob.bufsize) do
+      {:ok, _} -> :ok
+      {:error, reason} -> raise "failed to seek in large object: #{inspect(reason)}"
+    end
+
+    for _ <- 0..(length - 1) do
+      case PgLargeObjects.LargeObject.read(lob, lob.bufsize) do
+        {:ok, data} -> data
+        {:error, reason} -> raise "failed to read from large object: #{inspect(reason)}"
+      end
+    end
+  end
+
+  defp slicing_fun(lob, start, length, step) do
+    for i <- 0..(length - 1)//step do
+      case PgLargeObjects.LargeObject.seek(lob, (start + i) * lob.bufsize) do
+        {:ok, _} -> :ok
+        {:error, reason} -> raise "failed to seek in large object: #{inspect(reason)}"
+      end
+
+      case PgLargeObjects.LargeObject.read(lob, lob.bufsize) do
+        {:ok, data} -> data
+        {:error, reason} -> raise "failed to read from large object: #{inspect(reason)}"
+      end
     end
   end
 end
