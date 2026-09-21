@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.2.8 - unreleased
+
+  * Run CI checks with latest Elixir/OTP versions
+
 ## v0.2.7 - 2026-05-17
 
   * Fix `Collectable` implementation silently ignoring write errors.
